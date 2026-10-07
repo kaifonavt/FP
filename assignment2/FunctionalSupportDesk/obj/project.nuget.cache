@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "CXHHqOrCpNc=",
+  "success": true,
+  "projectFilePath": "/home/kaifonavt/Repos/FP/assignment2/FunctionalSupportDesk/FunctionalSupportDesk.csproj",
+  "expectedPackageFiles": [
+    "/home/kaifonavt/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.12/microsoft.aspnetcore.app.ref.10.0.12.nupkg.sha512"
+  ],
+  "logs": []
+}
