@@ -55,4 +55,5 @@ dkms.conf
 *.dwo
 
 .idea/
-
+bin/
+obj/

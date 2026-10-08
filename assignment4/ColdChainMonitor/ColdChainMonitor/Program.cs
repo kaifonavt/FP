@@ -42,11 +42,3 @@ catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
     Console.Error.WriteLine($"Processing failed: {ex.Message}");
     return 1;
 }
-
-public static Func<IEnumerable<int>, Array<int>> SumEvenFibonacci =
-    fibonacciSequence => fibonacciSequence
-        .Take(10)
-        .Where(n => n % 2 == 1)
-        .Chunk(2)
-        .Select(n => n.Sum())
-        .ToArray();
