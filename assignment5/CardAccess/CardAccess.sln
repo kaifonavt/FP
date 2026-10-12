@@ -1,16 +1,12 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{71EA63A5-6CEC-416B-A7D6-8694C59F08D0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2D84E36A-377B-4360-A46F-2B68506EE65E}"
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{332D307F-0069-4A1E-ACDA-10FF5DB37712}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{47C8C249-3934-4DAD-BCA5-EAF5C8CD25E0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardAccess.Tests", "tests\CardAccess.Tests\CardAccess.Tests.csproj", "{E17F7DE2-9C3D-4CE1-A3CA-0D462E48DBAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardAccess", "src\CardAccess\CardAccess.csproj", "{862CFD12-E4BF-417C-A40F-A6776B9557F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,11 +30,24 @@ Global
 		{E17F7DE2-9C3D-4CE1-A3CA-0D462E48DBAF}.Release|x64.Build.0 = Release|Any CPU
 		{E17F7DE2-9C3D-4CE1-A3CA-0D462E48DBAF}.Release|x86.ActiveCfg = Release|Any CPU
 		{E17F7DE2-9C3D-4CE1-A3CA-0D462E48DBAF}.Release|x86.Build.0 = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|x64.Build.0 = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Debug|x86.Build.0 = Debug|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|x64.Build.0 = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|x86.ActiveCfg = Release|Any CPU
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E17F7DE2-9C3D-4CE1-A3CA-0D462E48DBAF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{862CFD12-E4BF-417C-A40F-A6776B9557F2} = {332D307F-0069-4A1E-ACDA-10FF5DB37712}
 	EndGlobalSection
 EndGlobal
