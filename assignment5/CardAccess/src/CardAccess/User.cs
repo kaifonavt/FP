@@ -1,12 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CardAccess
+namespace CardAccess;
+
+public class User
 {
-    public enum AccessLevel { Guest = 0, Staff = 1, Admin = 2 }
+    public int id { get; }
+    public string name { get; }
+    public string surename { get; }
 
-    public record User(int Id, string Name, string Surname, AccessLevel AccessLevel);
+    public User(int id, string name, string surename)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Field name cannot be empty.", nameof(name));
+        }
+
+        if (string.IsNullOrWhiteSpace(surename))
+        {
+            throw new ArgumentException("Field surename cannot be empty.", nameof(surename));
+        }
+
+        this.id = id;
+        this.name = name;
+        this.surename = surename;
+    }
 }
