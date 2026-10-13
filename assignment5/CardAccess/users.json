@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Alice Smith", "level": "Admin" },
+  { "id": 2, "name": "Bob Jones", "level": "Staff" },
+  { "id": 3, "name": "Charlie Brown", "level": "Public" }
+]

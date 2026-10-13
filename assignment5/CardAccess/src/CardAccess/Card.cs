@@ -30,9 +30,5 @@ public sealed class Card
         }
         ulong result = ((hash1 & 0xFFFFFFFF) << 32) | (hash2 & 0xFFFFFFFF);
         return result.ToString("x16");
-    }
-    
+    } 
 }
-	
-
-

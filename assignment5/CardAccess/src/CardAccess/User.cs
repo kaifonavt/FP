@@ -7,8 +7,9 @@ public class User
     public int id { get; }
     public string name { get; }
     public string surename { get; }
+    public AccessLevel level { get; }
 
-    public User(int id, string name, string surename)
+    public User(int id, string name, string surename, AccessLevel level)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -19,9 +20,9 @@ public class User
         {
             throw new ArgumentException("Field surename cannot be empty.", nameof(surename));
         }
-
         this.id = id;
         this.name = name;
         this.surename = surename;
+        this.level = level;
     }
 }

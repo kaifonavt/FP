@@ -1,32 +1,14 @@
 ﻿namespace CardAccess;
-
-using System;
-
-public enum RoomType
+public sealed class Room
 {
-    Public,
-    Staff,
-    Admin
-}
+    public int number { get; }
+    public AccessLevel level { get; }
 
-public sealed record Room
-{
-    public int Number { get; }
-    public RoomType Type { get; }
-
-    public Room(int number, RoomType roomType)
+    public Room(int number, AccessLevel level)
     {
-        if (number <= 0)
-            throw new ArgumentOutOfRangeException(
-                nameof(number),
-                "Room number must be greater than zero.");
-
-        if (!Enum.IsDefined(typeof(RoomType), roomType))
-            throw new ArgumentOutOfRangeException(
-                nameof(roomType),
-                "Unknown room type.");
-
-        Number = number;
-        Type = roomType;
+        if (number <= 0) throw new ArgumentOutOfRangeException(nameof(number), "Room number must be greater than zero.");
+        if (!Enum.IsDefined(typeof(AccessLevel), level)) throw new ArgumentOutOfRangeException(nameof(level), "Unknown room type.");
+        this.number = number;
+        this.level = level;
     }
 }
