@@ -25,13 +25,46 @@ public sealed class Ticket
         // TODO: Constructor (Meir)
     }
 
-    private Func<Ticket, int> getDangerRate = ticket => ticket switch
+
+    private Func<Ticket, int> getDangerRate = ticket =>
     {
-        // TODO: return multuplier according to error code table (Zhalgas)
-    }; 
-    private Func<Ticket , int> getBaseScore  = ticket => ticket switch 
-    {
-        //TODO: according to level return (Zhalgas)
-        //return baseScore*
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        string? description = ticket.description;
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new ArgumentException(
+                "Ticket description cannot be empty.",
+                nameof(ticket));
+        }
+
+        return description switch
+        {
+            var d when d.Contains("500") => 5,
+            var d when d.Contains("404") => 3,
+            var d when d.Contains("400") => 2,
+            _ => 1
+        };
     };
+
+    private Func<Ticket, int> getBaseScore = ticket =>
+    {
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        int baseScore = ticket.level switch
+        {
+            Level.Basic => 10,
+            Level.Medium => 25,
+            Level.High => 50,
+            Level.Critical => 100,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(ticket),
+                "Unsupported ticket level.")
+        };
+
+        return baseScore *
+               ticket.calculateMultiplier(ticket.getDangerRate, ticket);
+    };
+
 }
