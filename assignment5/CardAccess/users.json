@@ -1,6 +1,26 @@
 [
-  { "id": 159004, "name": "Alice", "surname": " Smith", "level": "Admin" },
-  { "id": 257383, "name": "Bob", "surname": "Jones", "level": "Staff" },
-  { "id": 110901, "name": "Charlie", "surname": "Kirk", "level": "Guest" },
-  { "id": 322322, "name": "Artur", "surname": "Vodonos", "level": "Guest" }
+  {
+    "id": 159004,
+    "name": "Alice",
+    "surname": " Smith",
+    "level": "Admin"
+  },
+  {
+    "id": 257383,
+    "name": "Bob",
+    "surname": "Jones",
+    "level": "Staff"
+  },
+  {
+    "id": 110901,
+    "name": "Charlie",
+    "surname": "Kirk",
+    "level": "Guest"
+  },
+  {
+    "id": 322322,
+    "name": "Artur",
+    "surname": "Vodonos",
+    "level": "Guest"
+  }
 ]

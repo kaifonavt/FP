@@ -6,9 +6,12 @@
 
 **6 points total | Code 4 | Written explanation 2**
 
-Return the total Weight of valid Express deliveries. Ignore other modes and invalid lines, and continue processing later lines. Return 0 for empty input or no matching deliveries.
+Return the total Weight of valid Express deliveries. Ignore other modes and invalid lines, and continue processing later
+lines. Return 0 for empty input or no matching deliveries.
 
-Each line has the format `Mode;Weight`. The provided `TryParseLine` helper is correct: it accepts Standard, Express, Priority and an integer from 1 to 6 inclusive, trims spaces around both fields, and rejects malformed or null lines. Assume the input sequence itself is non-null.
+Each line has the format `Mode;Weight`. The provided `TryParseLine` helper is correct: it accepts Standard, Express,
+Priority and an integer from 1 to 6 inclusive, trims spaces around both fields, and rejects malformed or null lines.
+Assume the input sequence itself is non-null.
 
 Correct exactly two logical errors in the method below. Keep the signature and foreach loop.
 
@@ -28,14 +31,16 @@ public static int SumExpressWeights(IEnumerable<string> lines)
 }
 ```
 
--   **Example input:** `"Express;2"`; `"Standard;3"`; `"bad"`; `"Express;4"`.
--   **Expected result:** 6.
+- **Example input:** `"Express;2"`; `"Standard;3"`; `"bad"`; `"Express;4"`.
+- **Expected result:** 6.
 
-In `DemoTask1`, add two `Check(label, expectedInt, actualInt)` calls. Each input must expose a different bug: fail before the fixes and pass afterwards. Do not reuse the whole provided example.
+In `DemoTask1`, add two `Check(label, expectedInt, actualInt)` calls. Each input must expose a different bug: fail
+before the fixes and pass afterwards. Do not reuse the whole provided example.
 
 ### Required explanation Q1
 
-Why can returning total at the first invalid line make the result depend on input order? Give two orderings of the same lines that produce different results in the original buggy method.
+Why can returning total at the first invalid line make the result depend on input order? Give two orderings of the same
+lines that produce different results in the original buggy method.
 
 ### Assessment
 
@@ -76,7 +81,8 @@ public record Delivery(
     bool IsReady, DeliveryMode Mode);
 ```
 
-Assume valid non-null records: unique positive IDs, non-null text, Weight from 1 to 6, and only the declared enum values. The rule parameter is non-null. Do not add validation for these assumptions.
+Assume valid non-null records: unique positive IDs, non-null text, Weight from 1 to 6, and only the declared enum
+values. The rule parameter is non-null. Do not add validation for these assumptions.
 
 ### Methods to implement
 
@@ -87,8 +93,9 @@ public static int Evaluate(
 public static int BaseScore(Delivery item)
 ```
 
-1.  `Evaluate` must call the supplied rule with `item` and return its result. It must work with any supplied scoring function.
-2.  `BaseScore` must use a switch expression on `Mode`. Select the base points from the table, then add `Weight`.
+1. `Evaluate` must call the supplied rule with `item` and return its result. It must work with any supplied scoring
+   function.
+2. `BaseScore` must use a switch expression on `Mode`. Select the base points from the table, then add `Weight`.
 
 MODE
 
@@ -106,9 +113,11 @@ PRIORITY
 
 20
 
-3.  In `DemoTask2`, call `Evaluate` with two different lambdas. The first returns `BaseScore`; the second returns `BaseScore` plus `Weight` once more. Print both returned values.
+3. In `DemoTask2`, call `Evaluate` with two different lambdas. The first returns `BaseScore`; the second returns
+   `BaseScore` plus `Weight` once more. Print both returned values.
 
-Both methods and lambdas must be pure: no console or file operations, no changes to the input, and no changes to external state.
+Both methods and lambdas must be pure: no console or file operations, no changes to the input, and no changes to
+external state.
 
 ### Example
 
@@ -116,7 +125,8 @@ For Express with $text{Weight} = 3$, the two results are 13 and 16. The sample o
 
 ### Required explanation Q2
 
-What does `Evaluate(sample, x => 100)` return, and why? Would `BaseScore` remain pure if it called `Console.WriteLine`? Explain.
+What does `Evaluate(sample, x => 100)` return, and why? Would `BaseScore` remain pure if it called `Console.WriteLine`?
+Explain.
 
 ### Assessment
 
@@ -163,11 +173,13 @@ public static IEnumerable<int> AdjacentSums(
 
 ### Requirements
 
--   Use `yield return`.
--   Traverse `values` once per enumeration and keep a fixed number of local variables.
--   Do **not** use LINQ, indexing, `Count()`, repeated traversal, a temporary array or list, or shared mutable fields.
--   The sequence must be lazy: calling the method must not consume input values. Empty input and a single input value must both produce an empty result. Preserve the original order of neighbouring pairs.
--   Assume `values` is non-null and every integer is from -1000 to 1000. Do not change the input or print inside the iterator. Demonstration calls are already provided; you do not need to write them.
+- Use `yield return`.
+- Traverse `values` once per enumeration and keep a fixed number of local variables.
+- Do **not** use LINQ, indexing, `Count()`, repeated traversal, a temporary array or list, or shared mutable fields.
+- The sequence must be lazy: calling the method must not consume input values. Empty input and a single input value must
+  both produce an empty result. Preserve the original order of neighbouring pairs.
+- Assume `values` is non-null and every integer is from -1000 to 1000. Do not change the input or print inside the
+  iterator. Demonstration calls are already provided; you do not need to write them.
 
 ### Examples
 
@@ -197,7 +209,8 @@ EXPECTED RESULT
 
 ### Required explanation Q3
 
-After `var result = AdjacentSums(new[] { 3, 5, 2 });`, has the input been traversed? If a consumer then requests only the first result, which input values must be read and what is that result? Explain.
+After `var result = AdjacentSums(new[] { 3, 5, 2 });`, has the input been traversed? If a consumer then requests only
+the first result, which input values must be read and what is that result? Explain.
 
 ### Assessment
 

@@ -1,5 +1,14 @@
 [
-  { "number": 101, "type": "Guest" },
-  { "number": 202, "type": "Staff" },
-  { "number": 303, "type": "Admin" }
+  {
+    "number": 101,
+    "type": "Guest"
+  },
+  {
+    "number": 202,
+    "type": "Staff"
+  },
+  {
+    "number": 303,
+    "type": "Admin"
+  }
 ]

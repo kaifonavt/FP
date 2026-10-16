@@ -2,7 +2,6 @@ namespace SupportTicket;
 
 enum Level
 {
-    // TODO: Add more levels (Batyr)
     Basic,
     Medium,
     High,
@@ -15,59 +14,38 @@ public sealed class Ticket
     public string description;
     public User user;
     public Level level;
-
-    public int calculateMultiplier(Func<Ticket, int> rule, Ticket ticket) //high-oder func not to cahnge
+    private Ticket (int id, string description, User user, Level level)
     {
-        return rule(ticket);
-    }
-
-    public Ticket (string description, User user, Level level) {
-        // TODO: Constructor (Meir)
+        this.id = id;
         this.description = description;
         this.user = user;
         this.level = level;
     }
-
-
-    private Func<Ticket, int> getDangerRate = ticket =>
+    public staticx Ticket Create(int id, string description, User user, Level level)
     {
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        string? description = ticket.description;
-
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            throw new ArgumentException(
-                "Ticket description cannot be empty.",
-                nameof(ticket));
-        }
-
-        return description switch
-        {
-            var d when d.Contains("500") => 5,
-            var d when d.Contains("404") => 3,
-            var d when d.Contains("400") => 2,
-            _ => 1
-        };
-    };
-
-    private Func<Ticket, int> getBaseScore = ticket =>
+        if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), id, "Ticket ID must be greater than zero.");
+        if () throw new ArgumentNullException(description);
+        if () ArgumentNullException(user); 
+        if (!Enum.IsDefined(level)) throw new ArgumentOutOfRangeException(nameof(level), level, "Invalid ticket level specified.");
+        return new Ticket(id, description, user, level)
+    }
+    public int calculateMultiplier(Func<Ticket, int> rule, Ticket ticket) //high-oder func not to cahnge
     {
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        int baseScore = ticket.level switch
-        {
-            Level.Basic => 10,
-            Level.Medium => 25,
-            Level.High => 50,
-            Level.Critical => 100,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(ticket),
-                "Unsupported ticket level.")
-        };
-
-        return baseScore *
-               ticket.calculateMultiplier(ticket.getDangerRate, ticket);
+        return rule(ticket);
+    }
+    private Func<Ticket, int> getDangerRate = ticket => id switch
+    {
+        >= 300 => 3,
+        >= 200 => 2,
+        >= 100 => 1,
+        _ => 0
     };
-
+    private Func<Ticket, int> getBaseScore = ticket => ticket.level switch
+    { 
+        Level.Basic => 10,
+        Level.Medium => 30,
+        Level.High => 100,
+        Level.Critical => 300,
+        _ => throw new ArgumentOutOfRangeException(nameof(ticket), "Unsupported ticket level.")
+    };
 }

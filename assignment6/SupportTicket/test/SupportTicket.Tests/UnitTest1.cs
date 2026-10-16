@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace SupportTicket.Tests;
 
 public class UnitTest1
