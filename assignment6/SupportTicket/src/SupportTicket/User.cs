@@ -1,18 +1,19 @@
-﻿using System;
+﻿using System.Text.Json.Serialization;
 
 namespace SupportTicket;
 
 public sealed class User
 {
-    public int Id { get; }
-    public string Name { get; }
-    public string Surname { get; }
-
+    public int id { get; }
+    public string name { get; }
+    public string surname { get; }
+    
+    [JsonConstructor]
     private User(int id, string name, string surname)
     {
-        Id = id;
-        Name = name;
-        Surname = surname;
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
     }
     public static User Create(int id, string? name, string? surname)
     {
@@ -20,5 +21,13 @@ public sealed class User
         if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name cannot be empty.", nameof(name));
         if (string.IsNullOrWhiteSpace(surname)) throw new ArgumentException("Surname cannot be empty.", nameof(surname));
         return new User(id, name.Trim(), surname.Trim());
+    }
+    public static bool IsValid(int id ,IEnumerable<User> users)
+    {
+        foreach (User user in users)
+        {
+            if (id == user.id) return true;
+        }
+        return false;
     }
 }

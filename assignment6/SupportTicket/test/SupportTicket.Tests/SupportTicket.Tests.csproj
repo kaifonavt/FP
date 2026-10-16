@@ -20,6 +20,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="..\..\src\CardAccess\CardAccess.csproj"/>
+        <ProjectReference Include="..\..\src\SupportTicket\SupportTicket.csproj"/>
     </ItemGroup>
 </Project>
