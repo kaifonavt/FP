@@ -15,7 +15,7 @@ public class UnitTest1
     [Fact]
     public void Factory_InvalidInput_RejectsGracefully()
     {
-        string invalidTitle = ""; 
+        string invalidTitle = "";
         bool isRejected = string.IsNullOrWhiteSpace(invalidTitle);
         Assert.True(isRejected, "Factory must reject empty or invalid input.");
     }

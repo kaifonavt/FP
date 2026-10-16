@@ -21,8 +21,11 @@ public sealed class Ticket
         return rule(ticket);
     }
 
-    public Ticket () {
+    public Ticket (string description, User user, Level level) {
         // TODO: Constructor (Meir)
+        this.description = description;
+        this.user = user;
+        this.level = level;
     }
 
 
