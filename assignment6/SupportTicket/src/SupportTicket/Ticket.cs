@@ -4,6 +4,8 @@ enum Level
 {
     // TODO: Add more levels (Batyr)
     Basic,
+    Medium,
+    High,
     Critical,
 }
 
