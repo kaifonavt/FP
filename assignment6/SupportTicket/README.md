@@ -6,7 +6,7 @@ This C# console module creates and scores incident tickets for a building securi
 
 The current implementation covers ticket validation and scoring. It does not control security equipment, authenticate credentials, dispatch guards, or store tickets. Building security is the application context; the source retains the `SupportTicket` names.
 
-Source reviewed: [kaifonavt/FP](https://github.com/kaifonavt/FP/tree/70f0d2888cd471a5cf8a5fc27b66f7715b10dd25/assignment6/SupportTicket), commit `70f0d2888cd471a5cf8a5fc27b66f7715b10dd25`. See [REPORT.md](REPORT.md) for the design analysis and remaining gaps.
+Source reviewed: [kaifonavt/FP](https://github.com/kaifonavt/FP/tree/70f0d2888cd471a5cf8a5fc27b66f7715b10dd25/assignment6/SupportTicket), commit `70f0d2888cd471a5cf8a5fc27b66f7715b10dd25`.
 
 ## Build, run, and test
 
