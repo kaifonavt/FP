@@ -16,7 +16,6 @@ public static class Parser
     {
         if (!File.Exists(filePath))
             throw new FileNotFoundException($"JSON file not found: {filePath}");
-
         string jsonString = File.ReadAllText(filePath);
         return JsonSerializer.Deserialize<List<T>>(jsonString, JsonOptions) ?? new List<T>();
     }
