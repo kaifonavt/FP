@@ -248,13 +248,3 @@ This is the reusable BuildingSecurity module for the final-project workflow.
 Assignments 5/6 patterns (pipeline and validated factories) are carried forward in
 the implementation; their old executables are not invoked from this console.
 Assignment 8/final-project integration remains a later project step.
-
-## Submission
-
-For the Assignment 7 ZIP include this module's solution, `global.json`, `src`,
-`tests`, `sample-data`, README and team contribution record. Exclude all nested
-`bin`, `obj`, `.idea`, `.git`, local caches and secrets. The separate assignment PDF
-does not need to be packaged as application source. Re-run the build, tests and demo
-from a clean extraction. Every student submits the runnable snapshot in Moodle;
-a repository URL alone does not replace it. Complete the missing team details and
-be ready to explain your own code and modify a rule/test during defense.
