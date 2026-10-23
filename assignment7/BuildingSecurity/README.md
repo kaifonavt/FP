@@ -219,30 +219,20 @@ Key assertions to show at defense:
 
 ## Team contribution record
 
-Names below come from the team commits/local handoff. Missing details must be
-completed by the team before submission; a GitHub handle is not a replacement for
-the required full name and group. Each member must review and explain the actual code.
+All team members belong to group **IT-2511**.
 
-| Member | Name / account | Group | Contribution at this stage |
-| --- | --- | --- | --- |
-| 1 | Artur Mikhayevich / `kaifonavt` | To be supplied | Result/Option, validated models, SecurityData, functional/model tests. |
-| 2 | Meiirzhan Baigurman / `mmeeir` | To be supplied | Access pipeline, pure rule checks, entry/exit and workflow tests. |
-| 3 | Full name to be supplied / `P4fos` | To be supplied | JSON parser, operational errors, reload rules, sample contents and file tests. |
-| 4 | Mukhametzhanov Batyrkhan / `bl1rk` | IT-2511 | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
+Names below come from the team commits/local handoff. Complete the missing full
+name before submission. Each member must review and explain the actual code.
+
+| Member | Name / account | Contribution at this stage |
+| --- | --- | --- |
+| 1 | Artur Mikhayevich / `kaifonavt` | Result/Option, validated models, SecurityData, functional/model tests. |
+| 2 | Meiirzhan Baigurman / `mmeeir` | Access pipeline, pure rule checks, entry/exit and workflow tests. |
+| 3 | Full name to be supplied / `P4fos` | JSON parser, operational errors, reload rules, sample contents and file tests. |
+| 4 | Mukhametzhanov Batyrkhan / `bl1rk` | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
 
 See `TEAM_COMMITS.md` for the handoff and file ownership. It does not execute or
 prescribe Git operations.
-
-### Member 4: console integration and verification
-
-Mukhametzhanov Batyrkhan, IT-2511, is responsible for the application boundary:
-argument and command parsing, final Result handling, readable output, the
-demonstration script, console tests, sample-file packaging, and this documentation.
-The domain models, access rules, and JSON parser remain the earlier members' parts.
-
-The console test suite checks the integrated workflow rather than duplicating the
-domain rules. For example, a failed reload must leave the session usable for the
-next entry command, and an invalid command must report a reason without crashing.
 
 ## Remaining limitations and next stage
 
@@ -252,8 +242,7 @@ next entry command, and an invalid command must report a reason without crashing
   The automatic demo uses its documented fixed time for reproducibility.
 - The supplied snapshot already contains visit history. Reloading it cannot be
   used to clear history; begin a new session or use an initially empty visit list.
-- Complete the missing team names and groups in the contribution table before
-  submission. Those details have not been guessed.
+- Complete the missing full name in the contribution table before submission.
 
 This is the reusable BuildingSecurity module for the final-project workflow.
 Assignments 5/6 patterns (pipeline and validated factories) are carried forward in
