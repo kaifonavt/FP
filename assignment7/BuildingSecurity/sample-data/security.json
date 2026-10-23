@@ -1,0 +1,48 @@
+{
+  "guests": [
+    { "id": 1, "name": "Ali", "isBlocked": false },
+    { "id": 2, "name": "Dana", "isBlocked": true },
+    { "id": 3, "name": "Sam", "isBlocked": false },
+    { "id": 4, "name": "Aruzhan", "isBlocked": false },
+    { "id": 5, "name": "Dias", "isBlocked": false }
+  ],
+  "employees": [
+    { "id": 10, "name": "Batyrkhan", "maxGuests": 3 },
+    { "id": 20, "name": "Aigerim", "maxGuests": 1 }
+  ],
+  "rooms": [
+    { "id": 101, "name": "Meeting room", "buildingId": 1 },
+    { "id": 102, "name": "Server room", "buildingId": 1 },
+    { "id": 201, "name": "Office in building 2", "buildingId": 2 }
+  ],
+  "passes": [
+    {
+      "id": "P1", "guestId": 1, "employeeId": 10, "buildingId": 1,
+      "validFrom": "2026-10-01T00:00:00Z", "expiresAt": "2030-01-01T00:00:00Z",
+      "allowedRoomIds": [101]
+    },
+    {
+      "id": "P2", "guestId": 2, "employeeId": 10, "buildingId": 1,
+      "validFrom": "2026-10-01T00:00:00Z", "expiresAt": "2030-01-01T00:00:00Z",
+      "allowedRoomIds": [101]
+    },
+    {
+      "id": "P3", "guestId": 3, "employeeId": 10, "buildingId": 1,
+      "validFrom": "2026-10-01T00:00:00Z", "expiresAt": "2026-10-19T00:00:00Z",
+      "allowedRoomIds": [101]
+    },
+    {
+      "id": "P4", "guestId": 4, "employeeId": 20, "buildingId": 1,
+      "validFrom": "2026-10-01T00:00:00Z", "expiresAt": "2030-01-01T00:00:00Z",
+      "allowedRoomIds": [101]
+    },
+    {
+      "id": "P5", "guestId": 5, "employeeId": 20, "buildingId": 1,
+      "validFrom": "2026-10-01T00:00:00Z", "expiresAt": "2030-01-01T00:00:00Z",
+      "allowedRoomIds": [101]
+    }
+  ],
+  "visits": [
+    { "passId": "P5", "roomId": 101, "enteredAt": "2026-10-01T09:00:00Z", "exitedAt": null }
+  ]
+}

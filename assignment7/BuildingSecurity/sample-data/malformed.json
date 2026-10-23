@@ -1,4 +1,4 @@
-﻿{
+{
   "guests": [
     { "id": 1, "name": "Ali", "isBlocked": false }
   ],
