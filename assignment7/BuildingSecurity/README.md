@@ -228,9 +228,6 @@ All team members belong to group **IT-2511**.
 | 3 | Mailybay Zhalgas / `P4fos` | JSON parser, operational errors, reload rules, sample contents and file tests. |
 | 4 | Mukhametzhanov Batyrkhan / `bl1rk` | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
 
-See `TEAM_COMMITS.md` for the handoff and file ownership. It does not execute or
-prescribe Git operations.
-
 ## Remaining limitations and next stage
 
 - Session state is in memory; visits are not saved back to JSON.
