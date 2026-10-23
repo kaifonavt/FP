@@ -221,14 +221,11 @@ Key assertions to show at defense:
 
 All team members belong to group **IT-2511**.
 
-Names below come from the team commits/local handoff. Complete the missing full
-name before submission. Each member must review and explain the actual code.
-
 | Member | Name / account | Contribution at this stage |
 | --- | --- | --- |
 | 1 | Artur Mikhayevich / `kaifonavt` | Result/Option, validated models, SecurityData, functional/model tests. |
 | 2 | Meiirzhan Baigurman / `mmeeir` | Access pipeline, pure rule checks, entry/exit and workflow tests. |
-| 3 | Full name to be supplied / `P4fos` | JSON parser, operational errors, reload rules, sample contents and file tests. |
+| 3 | Mailybay Zhalgas / `P4fos` | JSON parser, operational errors, reload rules, sample contents and file tests. |
 | 4 | Mukhametzhanov Batyrkhan / `bl1rk` | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
 
 See `TEAM_COMMITS.md` for the handoff and file ownership. It does not execute or
@@ -242,7 +239,6 @@ prescribe Git operations.
   The automatic demo uses its documented fixed time for reproducibility.
 - The supplied snapshot already contains visit history. Reloading it cannot be
   used to clear history; begin a new session or use an initially empty visit list.
-- Complete the missing full name in the contribution table before submission.
 
 This is the reusable BuildingSecurity module for the final-project workflow.
 Assignments 5/6 patterns (pipeline and validated factories) are carried forward in
