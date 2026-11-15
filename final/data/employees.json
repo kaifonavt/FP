@@ -1,0 +1,6 @@
+[
+  { "id": "e1", "name": "Anna", "department": "Security", "clearanceLevel": 5, "isActive": true },
+  { "id": "e2", "name": "Boris", "department": "Sales", "clearanceLevel": 2, "isActive": true },
+  { "id": "e3", "name": "Viktor", "department": "IT", "clearanceLevel": 3, "isActive": true },
+  { "id": "e4", "name": "Darya", "department": "IT", "clearanceLevel": 5, "isActive": false }
+]

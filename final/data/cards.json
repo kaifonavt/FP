@@ -1,0 +1,7 @@
+[
+  { "id": "c1", "employeeId": "e1", "isActive": true },
+  { "id": "c2", "employeeId": "e2", "isActive": true },
+  { "id": "c3", "employeeId": "e3", "isActive": true },
+  { "id": "c4", "employeeId": "e4", "isActive": true },
+  { "id": "c5", "employeeId": "e1", "isActive": false }
+]
