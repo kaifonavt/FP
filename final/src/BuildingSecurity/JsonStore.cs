@@ -22,8 +22,6 @@ public sealed class JsonStore
 
     private static JsonSerializerOptions CreateOptions()
     {
-        // Every model property is required in JSON: a missing level or
-        // status must not silently become 0/false.
         var resolver = new DefaultJsonTypeInfoResolver();
         resolver.Modifiers.Add(info =>
         {
@@ -41,8 +39,6 @@ public sealed class JsonStore
         };
     }
 
-    // Read all seven files, then validate their values and references.
-    // Boundary catches file errors at the end of this file.
     public Result<SecurityState> Load()
     {
         return Boundary(() =>
@@ -73,7 +69,6 @@ public sealed class JsonStore
         return value;
     }
 
-    // Each workflow changes exactly one file. Multi-file changes are rejected before writing.
     public Result<bool> SaveChange(SecurityState before, SecurityState after) => Validation.State(after).Bind(_ =>
     {
         var changes = new List<(string File, object Value)>();
@@ -94,7 +89,6 @@ public sealed class JsonStore
 
     public Result<bool> Export<T>(string fileName, T value) => Boundary(() =>
     {
-        // Accept a simple JSON filename, never a path to another folder.
         if (string.IsNullOrWhiteSpace(fileName) || fileName.Length > 128 ||
             !char.IsLetterOrDigit(fileName[0]) ||
             !fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||

@@ -2,7 +2,6 @@ namespace BuildingSecurity;
 
 public static class ProjectPaths
 {
-    // Start next to the running assembly so the caller's working folder does not matter.
     public static string Root
     {
         get
