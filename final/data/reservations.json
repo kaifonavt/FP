@@ -1,0 +1,5 @@
+﻿[
+  { "id": "b1", "roomId": "r1", "employeeId": "e2", "start": "2026-11-13T10:00:00+05:00", "end": "2026-11-13T11:00:00+05:00", "status": "active" },
+  { "id": "b2", "roomId": "r3", "employeeId": "e3", "start": "2026-11-13T10:00:00+05:00", "end": "2026-11-13T12:00:00+05:00", "status": "active" },
+  { "id": "b3", "roomId": "r1", "employeeId": "e1", "start": "2026-11-13T10:00:00+05:00", "end": "2026-11-13T12:00:00+05:00", "status": "cancelled" }
+]

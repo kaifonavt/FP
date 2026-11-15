@@ -1,0 +1,6 @@
+﻿[
+    { "id": "a1", "timestamp": "2026-11-11T10:00:00+05:00", "cardId": "c1", "employeeId": "e1", "roomId": "r2", "granted": true, "reason": "Access granted" },
+    { "id": "a2", "timestamp": "2026-11-11T10:01:00+05:00", "cardId": "c2", "employeeId": "e2", "roomId": "r2", "granted": false, "reason": "Insufficient clearance level" },
+    { "id": "a3", "timestamp": "2026-11-11T10:02:00+05:00", "cardId": "c2", "employeeId": "e2", "roomId": "r2", "granted": false, "reason": "Insufficient clearance level" },
+    { "id": "a4", "timestamp": "2026-11-11T10:03:00+05:00", "cardId": "c2", "employeeId": "e2", "roomId": "r2", "granted": false, "reason": "Insufficient clearance level" }
+]
