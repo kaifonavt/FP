@@ -1,0 +1,5 @@
+﻿[
+  { "id": "r1", "name": "Meeting room", "type": "meeting", "requiredLevel": 1 },
+  { "id": "r2", "name": "Server room", "type": "restricted", "requiredLevel": 5 },
+  { "id": "r3", "name": "Laboratory", "type": "laboratory", "requiredLevel": 3 }
+]

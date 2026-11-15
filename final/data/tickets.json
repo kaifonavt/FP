@@ -1,0 +1,4 @@
+﻿[
+  { "id": "t1", "employeeId": "e2", "description": "The meeting room card reader does not work", "createdAt": "2026-11-10T09:00:00+05:00", "status": "open", "resolvedAt": null },
+  { "id": "t2", "employeeId": "e3", "description": "Replace the laboratory lock", "createdAt": "2026-11-09T10:00:00+05:00", "status": "closed", "resolvedAt": "2026-11-10T11:00:00+05:00" }
+]
