@@ -11,7 +11,6 @@ public class ReportFolderTests
     public async Task Cli_exports_to_project_report_folder_even_with_custom_data()
     {
         using var temp = new TempStore();
-        // Run a temporary copy so this test never writes into the real project's report folder.
         var project = System.IO.Path.Combine(temp.Path, "BuildingSecuritySystem");
         Directory.CreateDirectory(project);
         File.WriteAllText(System.IO.Path.Combine(project, "BuildingSecuritySystem.sln"), "");
