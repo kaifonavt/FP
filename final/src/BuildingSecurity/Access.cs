@@ -3,7 +3,6 @@ namespace BuildingSecurity;
 public sealed record UnverifiedScan(string CardId, string RoomId, DateTimeOffset Timestamp);
 public sealed record ScanEntities(Card Card, Employee Employee, Room Room);
 
-// The private constructor makes successful validation the only way to obtain this type.
 public sealed class VerifiedCard
 {
     public Card Card { get; }
@@ -46,7 +45,6 @@ public static class Access
             _ => Result<bool>.Failure(ErrorCode.InvalidInput, "Unknown mode")
         };
 
-    // Currying; fixing policy and time yields a partially applied rule for this scan.
     public static Func<TimeSpan, Func<Room, Func<VerifiedCard, Result<AccessDecision>>>> CheckAccess(AccessPolicy policy) =>
         time => room => verified => policy(verified.Owner, room, time).Bind(allowed => allowed
             ? Result<AccessDecision>.Success(new(verified, room, true, "Access granted"))
