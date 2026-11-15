@@ -1,6 +1,6 @@
-using Xunit;
 using DroneEnergyControl.Commands;
 using DroneEnergyControl.Domain;
+using Xunit;
 
 namespace DroneEnergyControl.Tests;
 
@@ -55,6 +55,9 @@ public sealed class CommandTests
         Assert.Equal(ResultClassification.Rejected, result.Classification);
     }
 
-    private static Dictionary<string, BatteryUnit> Units(params (string Id, decimal Capacity, decimal Charge)[] values) =>
-        values.ToDictionary(x => x.Id, x => new BatteryUnit(x.Id, x.Capacity, x.Charge), StringComparer.OrdinalIgnoreCase);
+    private static Dictionary<string, BatteryUnit> Units(params (string Id, decimal Capacity, decimal Charge)[] values)
+    {
+        return values.ToDictionary(x => x.Id, x => new BatteryUnit(x.Id, x.Capacity, x.Charge),
+            StringComparer.OrdinalIgnoreCase);
+    }
 }

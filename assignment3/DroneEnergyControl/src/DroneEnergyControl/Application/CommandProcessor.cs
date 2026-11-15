@@ -1,4 +1,3 @@
-using DroneEnergyControl.Commands;
 using DroneEnergyControl.Domain;
 
 namespace DroneEnergyControl.Application;
@@ -14,7 +13,7 @@ public static class CommandProcessor
 
         foreach (var line in lines)
         {
-            if (!CommandParser.TryParse(line, out IEnergyCommand? command, out CommandResult? invalidResult))
+            if (!CommandParser.TryParse(line, out var command, out var invalidResult))
             {
                 results.Add(invalidResult!);
                 continue;

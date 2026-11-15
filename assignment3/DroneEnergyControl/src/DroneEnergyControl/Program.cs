@@ -3,9 +3,9 @@ using DroneEnergyControl.Domain;
 
 var units = new Dictionary<string, BatteryUnit>(StringComparer.OrdinalIgnoreCase)
 {
-    ["D1"] = new BatteryUnit("D1", 100m, 60m),
-    ["D2"] = new BatteryUnit("D2", 80m, 70m),
-    ["D3"] = new BatteryUnit("D3", 50m, 10m)
+    ["D1"] = new("D1", 100m, 60m),
+    ["D2"] = new("D2", 80m, 70m),
+    ["D3"] = new("D3", 50m, 10m)
 };
 
 string[] rawCommands =
@@ -31,8 +31,5 @@ foreach (var unit in units.Values.OrderBy(x => x.Id))
     Console.WriteLine($"{unit.Id} = {unit.Charge}");
 
 Console.WriteLine();
-Console.WriteLine($"Summary: Raw commands = {rawCommands.Length}; Applied = {results.Count(x => x.Classification == ResultClassification.Applied)}; Rejected valid commands = {results.Count(x => x.Classification == ResultClassification.Rejected)}; Invalid input = {results.Count(x => x.Classification == ResultClassification.Invalid)}");
-
-
-
-
+Console.WriteLine(
+    $"Summary: Raw commands = {rawCommands.Length}; Applied = {results.Count(x => x.Classification == ResultClassification.Applied)}; Rejected valid commands = {results.Count(x => x.Classification == ResultClassification.Rejected)}; Invalid input = {results.Count(x => x.Classification == ResultClassification.Invalid)}");

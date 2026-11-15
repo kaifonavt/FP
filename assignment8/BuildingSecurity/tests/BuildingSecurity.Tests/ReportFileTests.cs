@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Xunit;
 using static BuildingSecurity.Tests.TestData;
 
@@ -14,10 +15,13 @@ public class ReportFileTests
             var report = Ok(ReportWorkflow.Build(ReportTests.Sample(), Now, new NativeLoadAdapter()));
             Ok(ReportExporter.Save(report, path));
             using var exclusive = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-            using var json = System.Text.Json.JsonDocument.Parse(exclusive);
+            using var json = JsonDocument.Parse(exclusive);
             Assert.Equal(2, json.RootElement.GetProperty("HostLoad").GetArrayLength());
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]
@@ -35,9 +39,13 @@ public class ReportFileTests
                 Error(ReportExporter.Save(report, path), "ReportWriteError");
                 Assert.Single(Directory.GetFiles(directory));
             }
+
             Assert.Equal("original", File.ReadAllText(path));
         }
-        finally { Directory.Delete(directory, true); }
+        finally
+        {
+            Directory.Delete(directory, true);
+        }
     }
 
     [Theory]
@@ -49,11 +57,15 @@ public class ReportFileTests
         try
         {
             File.Copy(Path.Combine(AppContext.BaseDirectory, fixture), path);
-            if (valid) Ok(Parser.Load(path)); else Error(Parser.Load(path), "MalformedFile");
+            if (valid) Ok(Parser.Load(path));
+            else Error(Parser.Load(path), "MalformedFile");
             using var exclusive = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
             Assert.True(exclusive.Length > 0);
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]

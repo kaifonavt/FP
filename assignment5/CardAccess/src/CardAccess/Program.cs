@@ -1,7 +1,9 @@
 ﻿namespace CardAccess;
 
 public record AccessRequest(int UserId, string CardId, int RoomNumber);
+
 public record EnrichedRequest(User User, Card Card, Room Room);
+
 public record AccessResult(string UserName, int RoomNumber, bool AccessGranted, string Reason);
 
 public enum AccessLevel
@@ -13,7 +15,7 @@ public enum AccessLevel
 
 public class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Console.WriteLine("System Card Access Control");
 
@@ -23,13 +25,12 @@ public class Program
 
         while (true)
         {
-
             Console.Write("Enter card UUID (or 'exit' to quit): ");
-            string? cardId = Console.ReadLine()?.Trim();
+            var cardId = Console.ReadLine()?.Trim();
 
             if (string.IsNullOrEmpty(cardId)) continue;
             if (cardId.Equals("exit", StringComparison.OrdinalIgnoreCase)) break;
-            
+
             var card = cards.FirstOrDefault(c => c.id == cardId);
             if (card == null)
             {
@@ -38,30 +39,34 @@ public class Program
             }
 
             Console.Write("Enter room number for access: ");
-            string? roomInput = Console.ReadLine();
-    
-            if (!int.TryParse(roomInput, out int roomNumber))
+            var roomInput = Console.ReadLine();
+
+            if (!int.TryParse(roomInput, out var roomNumber))
             {
                 Console.WriteLine("[Error] Invalid room number format.");
                 continue;
             }
-            
+
             var requests = new List<AccessRequest>
             {
-                new AccessRequest(card.userId, card.id, roomNumber)
+                new(card.userId, card.id, roomNumber)
             };
 
             Console.WriteLine("\n[1] Strict Policy Evaluation:");
-            var strictResults = AccessPipeline.ProcessWorkflow(requests, users, cards, rooms, AccessPipeline.StrictPolicy).ToList();
+            var strictResults = AccessPipeline
+                .ProcessWorkflow(requests, users, cards, rooms, AccessPipeline.StrictPolicy).ToList();
             PrintResults(strictResults);
 
             Console.WriteLine("\n[2] Hierarchical Policy Evaluation:");
-            var hierResults = AccessPipeline.ProcessWorkflow(requests, users, cards, rooms, AccessPipeline.HierarchicalPolicy).ToList();
+            var hierResults = AccessPipeline
+                .ProcessWorkflow(requests, users, cards, rooms, AccessPipeline.HierarchicalPolicy).ToList();
             PrintResults(hierResults);
         }
+
         Console.WriteLine("System shutdown complete.");
     }
-    static void PrintResults(IEnumerable<AccessResult> results)
+
+    private static void PrintResults(IEnumerable<AccessResult> results)
     {
         if (!results.Any())
         {
@@ -71,8 +76,9 @@ public class Program
 
         foreach (var res in results)
         {
-            string status = res.AccessGranted ? "GRANTED" : "DENIED";
-            Console.WriteLine($"  -> User: {res.UserName} | Room: {res.RoomNumber} | Access: {status} | Reason: {res.Reason}");
+            var status = res.AccessGranted ? "GRANTED" : "DENIED";
+            Console.WriteLine(
+                $"  -> User: {res.UserName} | Room: {res.RoomNumber} | Access: {status} | Reason: {res.Reason}");
         }
     }
 }

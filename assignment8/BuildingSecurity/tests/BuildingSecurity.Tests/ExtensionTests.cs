@@ -16,12 +16,14 @@ public class ExtensionTests
     [Fact]
     public void WithDuration_IsDeferred_AndSnapshotDoesNotRepeatProcessing()
     {
-        int processed = 0;
+        var processed = 0;
+
         IEnumerable<Visit> Source()
         {
             processed++;
             yield return Ok(Visit.Create("P1", 101, Now.AddMinutes(-60.5), Option<DateTimeOffset>.None));
         }
+
         var query = Source().WithDuration(Now);
         Assert.Equal(0, processed);
         Assert.Equal(60, Assert.Single(query).Minutes);
@@ -56,6 +58,8 @@ public class ExtensionTests
     [InlineData(-1, 1)]
     [InlineData(60, 0)]
     [InlineData(60, 101)]
-    public void InvalidPolicy_IsResultFailure(int threshold, int weight) =>
+    public void InvalidPolicy_IsResultFailure(int threshold, int weight)
+    {
         Error(ScorePolicy.Create(threshold, weight), "InvalidPolicy");
+    }
 }

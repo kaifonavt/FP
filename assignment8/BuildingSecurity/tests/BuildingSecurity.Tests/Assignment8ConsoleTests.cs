@@ -18,7 +18,10 @@ public class Assignment8ConsoleTests
             Assert.Contains("native load=34%", output.ToString());
             Assert.True(File.Exists(path));
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]
@@ -46,7 +49,10 @@ public class Assignment8ConsoleTests
             Assert.True(File.Exists(path));
             Assert.DoesNotContain("ERROR", output.ToString());
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]

@@ -46,13 +46,11 @@ public static class CommandParser
     private static bool TryParseKind(string text, out CommandKind kind)
     {
         foreach (var value in Enum.GetValues<CommandKind>())
-        {
             if (string.Equals(value.ToString(), text, StringComparison.OrdinalIgnoreCase))
             {
                 kind = value;
                 return true;
             }
-        }
 
         kind = default;
         return false;

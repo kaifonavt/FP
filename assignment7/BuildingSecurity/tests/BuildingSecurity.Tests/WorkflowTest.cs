@@ -10,7 +10,7 @@ public class AccessPipelineTests
     {
         var state = Data();
         var result = Ok(
-            AccessPipeline.ProcessEntry(state, new("P1", 101), Now));
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now));
 
         var visit = Assert.Single(result.NextState.Visits);
 
@@ -26,12 +26,12 @@ public class AccessPipelineTests
     [Fact]
     public void BlacklistedGuest_IsRejectedWithoutChangingState()
     {
-        var state = Data(blocked: true);
+        var state = Data(true);
 
         Assert.Contains(
             "1",
             Error(
-                AccessPipeline.ProcessEntry(state, new("P1", 101), Now),
+                AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now),
                 "GuestBlocked").Message);
 
         Assert.Empty(state.Visits);
@@ -47,7 +47,7 @@ public class AccessPipelineTests
         Assert.Contains(
             "P1",
             Error(
-                AccessPipeline.ProcessEntry(state, new("P1", 101), Now),
+                AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now),
                 "PassExpired").Message);
 
         Assert.Empty(state.Visits);
@@ -62,7 +62,7 @@ public class AccessPipelineTests
 
         Assert.Single(
             Ok(AccessPipeline.ProcessEntry(
-                state, new("P1", 101), Now)).NextState.Visits);
+                state, new AccessRequest("P1", 101), Now)).NextState.Visits);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class AccessPipelineTests
         Error(
             AccessPipeline.ProcessEntry(
                 Data(validFrom: Now.AddMinutes(1)),
-                new("P1", 101),
+                new AccessRequest("P1", 101),
                 Now),
             "PassNotStarted");
     }
@@ -84,7 +84,7 @@ public class AccessPipelineTests
         Assert.Contains(
             "102",
             Error(
-                AccessPipeline.ProcessEntry(state, new("P1", 102), Now),
+                AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 102), Now),
                 "ZoneAccessDenied").Message);
 
         Assert.Empty(state.Visits);
@@ -104,7 +104,7 @@ public class AccessPipelineTests
             state.Visits));
 
         Error(
-            AccessPipeline.ProcessEntry(state, new("P1", 201), Now),
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 201), Now),
             "ZoneAccessDenied");
     }
 
@@ -114,11 +114,11 @@ public class AccessPipelineTests
         var state = Data(maxGuests: 1);
 
         state = Ok(AccessPipeline.ProcessEntry(
-            state, new("P2", 101), Now)).NextState;
+            state, new AccessRequest("P2", 101), Now)).NextState;
 
         var previous = state.Visits[0];
         var result =
-            AccessPipeline.ProcessEntry(state, new("P1", 101), Now);
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now);
 
         Assert.Contains(
             "10",
@@ -134,7 +134,7 @@ public class AccessPipelineTests
         var state = Data(maxGuests: 1);
 
         state = Ok(AccessPipeline.ProcessEntry(
-            state, new("P2", 101), Now)).NextState;
+            state, new AccessRequest("P2", 101), Now)).NextState;
 
         var occupied = state;
 
@@ -150,7 +150,7 @@ public class AccessPipelineTests
                 state.Visits[0].ExitedAt).Value);
 
         state = Ok(AccessPipeline.ProcessEntry(
-            state, new("P1", 101), Now.AddMinutes(2))).NextState;
+            state, new AccessRequest("P1", 101), Now.AddMinutes(2))).NextState;
 
         Assert.Equal(2, state.Visits.Count);
         Assert.Single(state.Visits.Where(v => v.IsActive));
@@ -164,7 +164,7 @@ public class AccessPipelineTests
         Assert.Equal(0, state.Employees[0].MaxGuests);
 
         Error(
-            AccessPipeline.ProcessEntry(state, new("P1", 101), Now),
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now),
             "HostGuestLimitExceeded");
     }
 
@@ -172,10 +172,10 @@ public class AccessPipelineTests
     public void RepeatedEntry_DoesNotCreateAnotherVisit()
     {
         var state = Ok(AccessPipeline.ProcessEntry(
-            Data(), new("P1", 101), Now)).NextState;
+            Data(), new AccessRequest("P1", 101), Now)).NextState;
 
         Error(
-            AccessPipeline.ProcessEntry(state, new("P1", 101), Now),
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 101), Now),
             "AlreadyInside");
 
         Assert.Single(state.Visits);
@@ -200,10 +200,10 @@ public class AccessPipelineTests
             state.Visits));
 
         state = Ok(AccessPipeline.ProcessEntry(
-            state, new("P1", 101), Now)).NextState;
+            state, new AccessRequest("P1", 101), Now)).NextState;
 
         Error(
-            AccessPipeline.ProcessEntry(state, new("P3", 101), Now),
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P3", 101), Now),
             "AlreadyInside");
 
         Assert.Single(state.Visits);
@@ -228,11 +228,11 @@ public class AccessPipelineTests
             "P999",
             Error(
                 AccessPipeline.ProcessEntry(
-                    state, new("P999", 101), Now),
+                    state, new AccessRequest("P999", 101), Now),
                 "PassNotFound").Message);
 
         Error(
-            AccessPipeline.ProcessEntry(state, new("P1", 999), Now),
+            AccessPipeline.ProcessEntry(state, new AccessRequest("P1", 999), Now),
             "RoomNotFound");
     }
 
@@ -240,7 +240,7 @@ public class AccessPipelineTests
     public void DomainFailure_SkipsLaterPipelineOperation()
     {
         var request = Ok(AccessPipeline.EnrichRequest(
-            Data(blocked: true), new("P1", 101), Now));
+            Data(true), new AccessRequest("P1", 101), Now));
 
         var calls = 0;
 
@@ -259,7 +259,7 @@ public class AccessPipelineTests
     public void RepeatedExit_AndExitBeforeEntry_AreRejected()
     {
         var state = Ok(AccessPipeline.ProcessEntry(
-            Data(), new("P1", 101), Now)).NextState;
+            Data(), new AccessRequest("P1", 101), Now)).NextState;
 
         Error(
             AccessPipeline.ProcessExit(

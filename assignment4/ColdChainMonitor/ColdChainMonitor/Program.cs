@@ -1,23 +1,35 @@
 using System.Globalization;
+using System.Text.Json;
 using ColdChainMonitor;
 
 try
 {
-    string inputPath = args.Length > 0 ? args[0] : "readings.txt";
-    string outputPath = args.Length > 1 ? args[1] : "archive.json";
-    DateTimeOffset createdAtUtc = args.Length > 2
+    var inputPath = args.Length > 0 ? args[0] : "readings.txt";
+    var outputPath = args.Length > 1 ? args[1] : "archive.json";
+    var createdAtUtc = args.Length > 2
         ? DateTimeOffset.ParseExact(args[2], "yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture,
             DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal)
         : DateTimeOffset.UtcNow;
     ImportResult imported;
-    using (FileStream input = File.OpenRead(inputPath))
+    using (var input = File.OpenRead(inputPath))
+    {
         imported = Pipeline.ReadReadings(input);
+    }
+
     var archive = new MonitoringArchive(createdAtUtc, imported.Readings,
         imported.Errors, Pipeline.Analyze(imported.Readings));
 
-    using (FileStream output = File.Create(outputPath)) Pipeline.WriteArchive(output, archive);
+    using (var output = File.Create(outputPath))
+    {
+        Pipeline.WriteArchive(output, archive);
+    }
+
     MonitoringArchive restored;
-    using (FileStream input = File.OpenRead(outputPath)) restored = Pipeline.ReadArchive(input);
+    using (var input = File.OpenRead(outputPath))
+    {
+        restored = Pipeline.ReadArchive(input);
+    }
+
     if (!Pipeline.SameValues(archive, restored)) throw new InvalidDataException("File round trip failed.");
 
     using var memory = new MemoryStream();
@@ -37,7 +49,7 @@ try
     return 0;
 }
 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
-    or System.Text.Json.JsonException or FormatException)
+                               or JsonException or FormatException)
 {
     Console.Error.WriteLine($"Processing failed: {ex.Message}");
     return 1;

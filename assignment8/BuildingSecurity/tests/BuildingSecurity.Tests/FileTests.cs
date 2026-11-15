@@ -5,23 +5,30 @@ namespace BuildingSecurity.Tests;
 
 public sealed class FileTests : IDisposable
 {
+    internal const string ValidJson = """
+                                      {
+                                        "guests": [{"id":1,"name":"Ali","isBlocked":false}],
+                                        "employees": [{"id":10,"name":"Host","maxGuests":0}],
+                                        "rooms": [{"id":101,"name":"Lobby","buildingId":1}],
+                                        "passes": [{"id":"P1","guestId":1,"employeeId":10,"buildingId":1,
+                                          "validFrom":"2026-10-20T09:00:00Z","expiresAt":"2026-10-20T11:00:00Z","allowedRoomIds":[101]}],
+                                        "visits": []
+                                      }
+                                      """;
+
     private readonly string directory = Path.Combine(
         Path.GetTempPath(),
         "BuildingSecurityTests-" + Guid.NewGuid());
 
-    internal const string ValidJson = """
-        {
-          "guests": [{"id":1,"name":"Ali","isBlocked":false}],
-          "employees": [{"id":10,"name":"Host","maxGuests":0}],
-          "rooms": [{"id":101,"name":"Lobby","buildingId":1}],
-          "passes": [{"id":"P1","guestId":1,"employeeId":10,"buildingId":1,
-            "validFrom":"2026-10-20T09:00:00Z","expiresAt":"2026-10-20T11:00:00Z","allowedRoomIds":[101]}],
-          "visits": []
-        }
-        """;
-
-    public FileTests() =>
+    public FileTests()
+    {
         Directory.CreateDirectory(directory);
+    }
+
+    public void Dispose()
+    {
+        Directory.Delete(directory, true);
+    }
 
     internal string Write(string json)
     {
@@ -105,11 +112,11 @@ public sealed class FileTests : IDisposable
     public void ImportedVisits_PreserveExitOptionAndOnlyActiveVisitCounts()
     {
         var json = ValidJson.Replace("\"visits\": []", """
-            "visits": [
-              {"passId":"P1","roomId":101,"enteredAt":"2026-10-20T09:10:00Z","exitedAt":"2026-10-20T09:30:00Z"},
-              {"passId":"P1","roomId":101,"enteredAt":"2026-10-20T10:00:00Z","exitedAt":null}
-            ]
-            """).Replace("\"maxGuests\":0", "\"maxGuests\":2");
+                                                       "visits": [
+                                                         {"passId":"P1","roomId":101,"enteredAt":"2026-10-20T09:10:00Z","exitedAt":"2026-10-20T09:30:00Z"},
+                                                         {"passId":"P1","roomId":101,"enteredAt":"2026-10-20T10:00:00Z","exitedAt":null}
+                                                       ]
+                                                       """).Replace("\"maxGuests\":0", "\"maxGuests\":2");
 
         var state = Ok(Parser.Load(Write(json)));
 
@@ -191,7 +198,7 @@ public sealed class FileTests : IDisposable
     public void Reload_CannotEraseSessionVisits()
     {
         var state = Ok(AccessPipeline.ProcessEntry(
-            Data(), new("P1", 101), Now)).NextState;
+            Data(), new AccessRequest("P1", 101), Now)).NextState;
 
         Error(
             Parser.Reload(state, Write(ValidJson)),
@@ -218,7 +225,4 @@ public sealed class FileTests : IDisposable
         Assert.Single(state.Guests);
         Assert.Equal(0, state.Employees[0].MaxGuests);
     }
-
-    public void Dispose() =>
-        Directory.Delete(directory, recursive: true);
 }

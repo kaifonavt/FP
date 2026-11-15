@@ -1,5 +1,9 @@
 {
   "guests": [
-    { "id": 1, "name": "Ali", "isBlocked": false }
+    {
+      "id": 1,
+      "name": "Ali",
+      "isBlocked": false
+    }
   ],
   "employees": [

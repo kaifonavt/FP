@@ -129,17 +129,13 @@ public class FunctionalTests
     [Fact]
     public void NullPayloads_AreRejectedInsteadOfCreatingContradictoryCases()
     {
-        Assert.Throws<ArgumentNullException>(
-            () => Result<string, string>.Success(default!));
+        Assert.Throws<ArgumentNullException>(() => Result<string, string>.Success(default!));
 
-        Assert.Throws<ArgumentNullException>(
-            () => Result<string, string>.Failure(default!));
+        Assert.Throws<ArgumentNullException>(() => Result<string, string>.Failure(default!));
 
-        Assert.Throws<ArgumentNullException>(
-            () => Option<string>.Some(default!));
+        Assert.Throws<ArgumentNullException>(() => Option<string>.Some(default!));
 
-        Assert.Throws<ArgumentNullException>(
-            () => Result<string, string>.Success("ok")
-                .Map<string>(_ => default!));
+        Assert.Throws<ArgumentNullException>(() => Result<string, string>.Success("ok")
+            .Map<string>(_ => default!));
     }
 }

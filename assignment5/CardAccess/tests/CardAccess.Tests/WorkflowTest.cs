@@ -1,19 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-using CardAccess;
-
-namespace CardAccess.Tests;
+﻿namespace CardAccess.Tests;
 
 public class AccessPipelineTests
 {
+    private readonly Room _adminRoom = new(303, AccessLevel.Admin);
     private readonly User _adminUser = new(1, "Alice", "Smith", AccessLevel.Admin);
-    private readonly User _staffUser = new(2, "Bob", "Jones", AccessLevel.Staff);
-    private readonly User _guestUser = new(3, "Charlie", "Brown", AccessLevel.Guest);
 
     private readonly Room _guestRoom = new(101, AccessLevel.Guest);
+    private readonly User _guestUser = new(3, "Charlie", "Brown", AccessLevel.Guest);
     private readonly Room _staffRoom = new(202, AccessLevel.Staff);
-    private readonly Room _adminRoom = new(303, AccessLevel.Admin);
+    private readonly User _staffUser = new(2, "Bob", "Jones", AccessLevel.Staff);
 
     [Fact]
     public void EnrichRequests_ShouldMatchValidUserCardAndRoom()

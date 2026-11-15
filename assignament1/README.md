@@ -11,7 +11,7 @@ dotnet run /directorytoProgram/
 ## Tests
 
 | **Price** | Age | Student | Ticket   | Day     | Result  |
-| --------- | --- | ------- | -------- | ------- | ------- |
+|-----------|-----|---------|----------|---------|---------|
 | 5000      | 5   | false   | Standard | Weekday | 0.00    |
 | 5000      | 10  | false   | Standard | Weekday | 2500.00 |
 | 5000      | 20  | true    | Standard | Weekday | 4250.00 |
@@ -28,7 +28,7 @@ Also negative price, empty input, text instead of age, unknown enum values, null
 
 `Main` function because it controls Input and output interact with them directly.
 
-`Console` related methods in Main are imperative 
+`Console` related methods in Main are imperative
 
 **Which functions are pure?**
 
@@ -39,7 +39,7 @@ decimal priceByDayType = ApplyPricingRule(priceByTicketType, DayTypeRule);
 decimal priceFinal = Math.Max(0.00m, Math.Round(priceByDayType, 2, MidpointRounding.AwayFromZero));
 ```
 
-These functions are pure because it has no side effects and determined 
+These functions are pure because it has no side effects and determined
 
 **Where do side effects remain?**
 

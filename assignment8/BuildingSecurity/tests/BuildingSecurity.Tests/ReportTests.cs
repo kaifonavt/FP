@@ -5,9 +5,13 @@ namespace BuildingSecurity.Tests;
 
 public class ReportTests
 {
-    internal static SecurityData Sample() => Ok(Parser.Load(Path.Combine(AppContext.BaseDirectory, "reporting.json")));
     private static Func<long, int> Day => RiskScoring.CreateScore(Ok(ScorePolicy.Create(60, 1)));
     private static Func<long, int> Night => RiskScoring.CreateScore(Ok(ScorePolicy.Create(30, 2)));
+
+    internal static SecurityData Sample()
+    {
+        return Ok(Parser.Load(Path.Combine(AppContext.BaseDirectory, "reporting.json")));
+    }
 
     [Fact]
     public void Attention_FiltersCompleted_ProjectsScores_AndOrdersByRisk()
@@ -32,7 +36,8 @@ public class ReportTests
     [Fact]
     public void EmptyDataset_AndNoMatches_ProduceEmptyReports()
     {
-        var empty = Ok(SecurityData.Create(Array.Empty<Guest>(), Array.Empty<Employee>(), Array.Empty<Room>(), Array.Empty<TemporaryPass>(), Array.Empty<Visit>()));
+        var empty = Ok(SecurityData.Create(Array.Empty<Guest>(), Array.Empty<Employee>(), Array.Empty<Room>(),
+            Array.Empty<TemporaryPass>(), Array.Empty<Visit>()));
         var rows = Ok(SecurityReports.Prepare(empty, Now));
         Assert.Empty(Ok(SecurityReports.Attention(rows, 0, Day, Night)));
         Assert.Empty(SecurityReports.HostTotals(rows));

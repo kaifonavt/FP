@@ -14,10 +14,8 @@ public static class Parser
     public static Result<SecurityData, AppError> Load(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-        {
             return FileFailure(
                 "InvalidPath", path, "A file path is required.");
-        }
 
         try
         {
@@ -26,7 +24,7 @@ public static class Parser
 
             var result = dto is null
                 ? Result<SecurityData, AppError>.Failure(
-                    new("InvalidData",
+                    new AppError("InvalidData",
                         "JSON root must be a data object."))
                 : Build(dto);
 
@@ -66,37 +64,41 @@ public static class Parser
 
     public static Result<SecurityData, AppError> Reload(
         SecurityData current,
-        string path) =>
-        Load(path).Bind(next => current.Visits.Count == 0
+        string path)
+    {
+        return Load(path).Bind(next => current.Visits.Count == 0
             ? Result<SecurityData, AppError>.Success(next)
             : Result<SecurityData, AppError>.Failure(
-                new("ReloadWouldDiscardVisits",
+                new AppError("ReloadWouldDiscardVisits",
                     $"Reload '{path}' refused: visit history already exists. Restart explicitly to load a new session.")));
+    }
 
-    private static Result<SecurityData, AppError> Build(DataDto dto) =>
-        BuildRows(
+    private static Result<SecurityData, AppError> Build(DataDto dto)
+    {
+        return BuildRows(
                 dto.Guests,
                 x => Guest.Create(x.Id, x.Name, x.IsBlocked))
             .Bind(guests => BuildRows(
                     dto.Employees,
                     x => Employee.Create(x.Id, x.Name, x.MaxGuests))
-            .Bind(employees => BuildRows(
-                    dto.Rooms,
-                    x => Room.Create(x.Id, x.Name, x.BuildingId))
-            .Bind(rooms => BuildRows(
-                    dto.Passes,
-                    x => TemporaryPass.Create(
-                        x.Id, x.GuestId, x.EmployeeId, x.BuildingId,
-                        x.ValidFrom, x.ExpiresAt, x.AllowedRoomIds))
-            .Bind(passes => BuildRows(
-                    dto.Visits,
-                    x => Visit.Create(
-                        x.PassId, x.RoomId, x.EnteredAt,
-                        x.ExitedAt.HasValue
-                            ? Option<DateTimeOffset>.Some(x.ExitedAt.Value)
-                            : Option<DateTimeOffset>.None))
-            .Bind(visits => SecurityData.Create(
-                guests, employees, rooms, passes, visits))))));
+                .Bind(employees => BuildRows(
+                        dto.Rooms,
+                        x => Room.Create(x.Id, x.Name, x.BuildingId))
+                    .Bind(rooms => BuildRows(
+                            dto.Passes,
+                            x => TemporaryPass.Create(
+                                x.Id, x.GuestId, x.EmployeeId, x.BuildingId,
+                                x.ValidFrom, x.ExpiresAt, x.AllowedRoomIds))
+                        .Bind(passes => BuildRows(
+                                dto.Visits,
+                                x => Visit.Create(
+                                    x.PassId, x.RoomId, x.EnteredAt,
+                                    x.ExitedAt.HasValue
+                                        ? Option<DateTimeOffset>.Some(x.ExitedAt.Value)
+                                        : Option<DateTimeOffset>.None))
+                            .Bind(visits => SecurityData.Create(
+                                guests, employees, rooms, passes, visits))))));
+    }
 
     private static Result<IReadOnlyList<T>, AppError> BuildRows<TDto, T>(
         TDto[]? rows,
@@ -105,11 +107,9 @@ public static class Parser
         where T : notnull
     {
         if (rows is null || rows.Any(x => x is null))
-        {
             return Result<IReadOnlyList<T>, AppError>.Failure(
-                new("InvalidData",
+                new AppError("InvalidData",
                     "Arrays and their records cannot be null."));
-        }
 
         var values = new List<T>();
 
@@ -118,10 +118,8 @@ public static class Parser
             var result = create(row);
 
             if (result is Result<T, AppError>.FailureCase failure)
-            {
                 return Result<IReadOnlyList<T>, AppError>.Failure(
                     failure.Error);
-            }
 
             values.Add(((Result<T, AppError>.SuccessCase)result).Value);
         }
@@ -133,9 +131,11 @@ public static class Parser
     private static Result<SecurityData, AppError> FileFailure(
         string code,
         string path,
-        string message) =>
-        Result<SecurityData, AppError>.Failure(
-            new(code, $"Load '{path}': {message}"));
+        string message)
+    {
+        return Result<SecurityData, AppError>.Failure(
+            new AppError(code, $"Load '{path}': {message}"));
+    }
 
     private sealed class DataDto
     {

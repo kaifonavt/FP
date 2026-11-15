@@ -1,14 +1,10 @@
-using System;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace CardAccess;
 
 public sealed class Card
 {
-    public string id { get; }
-    public int userId { get; }
-    public bool active { get; }
-
     [JsonConstructor]
     public Card(string id, int userId, bool active)
     {
@@ -21,28 +17,33 @@ public sealed class Card
     {
         this.userId = userId;
         this.active = active;
-        this.id = rule?.Invoke(userId) ?? GetHexId(userId);
+        id = rule?.Invoke(userId) ?? GetHexId(userId);
 
-        if (string.IsNullOrWhiteSpace(this.id))
+        if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentException("ID must be non-empty.", nameof(id));
     }
 
+    public string id { get; }
+    public int userId { get; }
+    public bool active { get; }
+
     public string GetHashId(Func<int, string> rule)
     {
-        return rule(this.userId);
+        return rule(userId);
     }
 
     public static string GetHexId(int number)
     {
-        ulong hash1 = 14695981039346656037UL;
-        ulong hash2 = 1099511628211UL;
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(number.ToString());
-        foreach (byte b in bytes)
+        var hash1 = 14695981039346656037UL;
+        var hash2 = 1099511628211UL;
+        var bytes = Encoding.UTF8.GetBytes(number.ToString());
+        foreach (var b in bytes)
         {
             hash1 = (hash1 ^ b) * 1099511628211UL;
             hash2 = (hash2 * 14695981039346656037UL) ^ b;
         }
-        ulong result = ((hash1 & 0xFFFFFFFF) << 32) | (hash2 & 0xFFFFFFFF);
+
+        var result = ((hash1 & 0xFFFFFFFF) << 32) | (hash2 & 0xFFFFFFFF);
         return result.ToString("x16");
     }
 }

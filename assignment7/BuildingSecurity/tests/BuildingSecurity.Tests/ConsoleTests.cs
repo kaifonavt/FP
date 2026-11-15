@@ -96,9 +96,12 @@ public class ConsoleTests
         using var output = new StringWriter();
         Assert.Equal(0, Program.Run(new[] { "--demo" }, TextReader.Null, output, () => Now));
         var text = output.ToString();
-        foreach (var expected in new[] { "GRANTED:", "GuestBlocked", "PassExpired", "ZoneAccessDenied",
-            "HostGuestLimitExceeded", "PassNotFound", "Some(guest 1)", "None: guest not found",
-            "Some(0)", "EXIT:", "MalformedFile", "FileNotFound", "Visits: 2 total, 1 active" })
+        foreach (var expected in new[]
+                 {
+                     "GRANTED:", "GuestBlocked", "PassExpired", "ZoneAccessDenied",
+                     "HostGuestLimitExceeded", "PassNotFound", "Some(guest 1)", "None: guest not found",
+                     "Some(0)", "EXIT:", "MalformedFile", "FileNotFound", "Visits: 2 total, 1 active"
+                 })
             Assert.Contains(expected, text);
     }
 

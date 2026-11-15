@@ -1,18 +1,9 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CardAccess;
 
 public class User
 {
-    public int id { get; }
-    public string name { get; }
-
-    [JsonPropertyName("surname")]
-    public string surename { get; }
-
-    public AccessLevel level { get; }
-
     [JsonConstructor]
     public User(int id, string name, string surename, AccessLevel level)
     {
@@ -27,4 +18,11 @@ public class User
         this.surename = surename.Trim();
         this.level = level;
     }
+
+    public int id { get; }
+    public string name { get; }
+
+    [JsonPropertyName("surname")] public string surename { get; }
+
+    public AccessLevel level { get; }
 }

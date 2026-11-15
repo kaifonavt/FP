@@ -21,10 +21,8 @@ public static class AccessPipeline
         Func<T, bool> predicate) where T : notnull
     {
         foreach (var item in items)
-        {
             if (predicate(item))
                 return Option<T>.Some(item);
-        }
 
         return Option<T>.None;
     }
@@ -37,11 +35,9 @@ public static class AccessPipeline
         if (request is null
             || string.IsNullOrWhiteSpace(request.PassId)
             || request.RoomId <= 0)
-        {
             return Fail<EnrichedRequest>(
                 "InvalidRequest",
                 "A pass ID and positive room ID are required.");
-        }
 
         return Find(state.Passes, p => p.Id == request.PassId.Trim())
             .ToResult(new AppError(
@@ -68,41 +64,41 @@ public static class AccessPipeline
     }
 
     public static Result<EnrichedRequest, AppError> CheckGuestBlocked(
-        EnrichedRequest request) =>
-        request.Guest.IsBlocked
+        EnrichedRequest request)
+    {
+        return request.Guest.IsBlocked
             ? Fail<EnrichedRequest>(
                 "GuestBlocked",
                 $"Guest {request.Guest.Id} ({request.Guest.Name}) is blacklisted.")
             : Result<EnrichedRequest, AppError>.Success(request);
+    }
 
     public static Result<EnrichedRequest, AppError> CheckPassValidity(
         EnrichedRequest request)
     {
         if (request.Now >= request.Pass.ExpiresAt)
-        {
             return Fail<EnrichedRequest>(
                 "PassExpired",
                 $"Pass '{request.Pass.Id}' expired at {request.Pass.ExpiresAt:O}.");
-        }
 
         if (request.Now < request.Pass.ValidFrom)
-        {
             return Fail<EnrichedRequest>(
                 "PassNotStarted",
                 $"Pass '{request.Pass.Id}' is valid from {request.Pass.ValidFrom:O}.");
-        }
 
         return Result<EnrichedRequest, AppError>.Success(request);
     }
 
     public static Result<EnrichedRequest, AppError> CheckZoneAccess(
-        EnrichedRequest request) =>
-        request.Room.BuildingId != request.Pass.BuildingId
-        || !request.Pass.AllowedRoomIds.Contains(request.Room.Id)
+        EnrichedRequest request)
+    {
+        return request.Room.BuildingId != request.Pass.BuildingId
+               || !request.Pass.AllowedRoomIds.Contains(request.Room.Id)
             ? Fail<EnrichedRequest>(
                 "ZoneAccessDenied",
                 $"Pass '{request.Pass.Id}' does not allow room {request.Room.Id} in building {request.Room.BuildingId}.")
             : Result<EnrichedRequest, AppError>.Success(request);
+    }
 
     public static Result<EnrichedRequest, AppError> CheckGuestLimit(
         EnrichedRequest request)
@@ -127,8 +123,7 @@ public static class AccessPipeline
             .Select(p => p.Id)
             .ToHashSet();
 
-        return state.Visits.Count(
-            visit => visit.IsActive && hostPassIds.Contains(visit.PassId));
+        return state.Visits.Count(visit => visit.IsActive && hostPassIds.Contains(visit.PassId));
     }
 
     private static Result<EnrichedRequest, AppError> CheckNotInside(
@@ -139,8 +134,7 @@ public static class AccessPipeline
             .Select(p => p.Id)
             .ToHashSet();
 
-        return request.State.Visits.Any(
-            v => v.IsActive && guestPassIds.Contains(v.PassId))
+        return request.State.Visits.Any(v => v.IsActive && guestPassIds.Contains(v.PassId))
             ? Fail<EnrichedRequest>(
                 "AlreadyInside",
                 $"Guest {request.Guest.Id} already has an active visit.")
@@ -148,18 +142,21 @@ public static class AccessPipeline
     }
 
     public static Result<EnrichedRequest, AppError> EvaluateAccess(
-        EnrichedRequest request) =>
-        CheckGuestBlocked(request)
+        EnrichedRequest request)
+    {
+        return CheckGuestBlocked(request)
             .Bind(CheckPassValidity)
             .Bind(CheckZoneAccess)
             .Bind(CheckNotInside)
             .Bind(CheckGuestLimit);
+    }
 
     public static Result<AccessDecision, AppError> ProcessEntry(
         SecurityData state,
         AccessRequest request,
-        DateTimeOffset now) =>
-        EnrichRequest(state, request, now)
+        DateTimeOffset now)
+    {
+        return EnrichRequest(state, request, now)
             .Bind(EvaluateAccess)
             .Bind(valid => Visit.Create(
                     valid.Pass.Id,
@@ -169,21 +166,25 @@ public static class AccessPipeline
                 .Bind(visit => state.WithVisits(
                     state.Visits.Append(visit)))
                 .Map(nextState => FormatResult(valid, nextState)));
+    }
 
     private static AccessDecision FormatResult(
         EnrichedRequest request,
-        SecurityData nextState) =>
-        new(
+        SecurityData nextState)
+    {
+        return new AccessDecision(
             nextState,
             $"GRANTED: {request.Guest.Name}, pass {request.Pass.Id}, room {request.Room.Id}, " +
             $"building {request.Room.BuildingId}. Host {request.Employee.Id}: " +
             $"{CountActiveGuests(nextState, request.Employee.Id)}/{request.Employee.MaxGuests} guests inside.");
+    }
 
     public static Result<AccessDecision, AppError> ProcessExit(
         SecurityData state,
         string passId,
-        DateTimeOffset now) =>
-        Find(state.Passes, p => p.Id == passId?.Trim())
+        DateTimeOffset now)
+    {
+        return Find(state.Passes, p => p.Id == passId?.Trim())
             .ToResult(new AppError(
                 "PassNotFound",
                 $"Pass '{passId}' was not found."))
@@ -195,15 +196,17 @@ public static class AccessPipeline
                     $"Pass '{pass.Id}' has no active visit."))
                 .Bind(active => active.Exit(now)
                     .Bind(completed => state.WithVisits(
-                        state.Visits.Select(
-                            v => ReferenceEquals(v, active) ? completed : v)))
+                        state.Visits.Select(v => ReferenceEquals(v, active) ? completed : v)))
                     .Map(nextState => new AccessDecision(
                         nextState,
                         $"EXIT: guest {pass.GuestId}, pass {pass.Id}. " +
                         $"Host {pass.EmployeeId} now has {CountActiveGuests(nextState, pass.EmployeeId)} guests inside."))));
+    }
 
     private static Result<T, AppError> Fail<T>(
         string code,
-        string message) where T : notnull =>
-        Result<T, AppError>.Failure(new(code, message));
+        string message) where T : notnull
+    {
+        return Result<T, AppError>.Failure(new AppError(code, message));
+    }
 }

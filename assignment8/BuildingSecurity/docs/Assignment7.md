@@ -66,18 +66,18 @@ Do not restore the old empty root JSON files or keep a second editable fixture c
 
 ## Console commands
 
-| Command | Behaviour |
-| --- | --- |
-| `help` | Print available commands. |
-| `list` | List guests, employees, rooms, passes and visit counts. |
-| `enter P1 101` | Validate and register entry; replace state only on success. |
-| `exit P1` | End an active visit; preserve history and release capacity. |
-| `lookup 1` | Show `Some(guest 1)` and its properties. |
-| `lookup 999` | Show `None: guest not found`. |
-| `count 10` | Show `Some(0)` if the known employee has no active guests. |
-| `count 999` | Show `None: employee not found`. |
+| Command                              | Behaviour                                                                                |
+|--------------------------------------|------------------------------------------------------------------------------------------|
+| `help`                               | Print available commands.                                                                |
+| `list`                               | List guests, employees, rooms, passes and visit counts.                                  |
+| `enter P1 101`                       | Validate and register entry; replace state only on success.                              |
+| `exit P1`                            | End an active visit; preserve history and release capacity.                              |
+| `lookup 1`                           | Show `Some(guest 1)` and its properties.                                                 |
+| `lookup 999`                         | Show `None: guest not found`.                                                            |
+| `count 10`                           | Show `Some(0)` if the known employee has no active guests.                               |
+| `count 999`                          | Show `None: employee not found`.                                                         |
 | `reload "sample-data/security.json"` | Validate the entire file before replacing state; refuse if visit history already exists. |
-| `quit` | End the session. EOF also ends it. |
+| `quit`                               | End the session. EOF also ends it.                                                       |
 
 Invalid commands report `InvalidCommand` and leave the session usable.
 Process exit codes: `0` for a completed session/demo or help, `1` for failed initial
@@ -93,22 +93,22 @@ on 2030-01-01; adjust input data for interactive demonstrations after that date.
 The sample already contains one active visit for P5, hosted by employee 20.
 Run these commands in a fresh session, in this order:
 
-| Input | Expected outcome |
-| --- | --- |
-| `lookup 1` | Present guest with `blocked=False`; false is legitimate data. |
-| `lookup 999` | Absent optional lookup. |
-| `count 10` | Present count `Some(0)`; zero is not absence. |
-| `enter P1 101` | `GRANTED`, one new active visit. |
-| `enter P2 101` | `GuestBlocked`. |
-| `enter P3 101` | `PassExpired`. |
-| `enter P1 102` | `ZoneAccessDenied`. |
-| `enter P4 101` | `HostGuestLimitExceeded`: employee 20 has limit 1 and already hosts P5. |
-| `enter P999 101` | `PassNotFound`: missing required lookup becomes a Result failure. |
-| `enter P1 101` | `AlreadyInside`, no second visit. |
-| `reload sample-data/malformed.json` | `MalformedFile`, state unchanged. |
-| `reload sample-data/does-not-exist.json` | `FileNotFound`, state unchanged (keep this path nonexistent). |
-| `exit P1` | `EXIT`, the visit remains in history but is inactive. |
-| `list` | `Visits: 2 total, 1 active`. |
+| Input                                    | Expected outcome                                                        |
+|------------------------------------------|-------------------------------------------------------------------------|
+| `lookup 1`                               | Present guest with `blocked=False`; false is legitimate data.           |
+| `lookup 999`                             | Absent optional lookup.                                                 |
+| `count 10`                               | Present count `Some(0)`; zero is not absence.                           |
+| `enter P1 101`                           | `GRANTED`, one new active visit.                                        |
+| `enter P2 101`                           | `GuestBlocked`.                                                         |
+| `enter P3 101`                           | `PassExpired`.                                                          |
+| `enter P1 102`                           | `ZoneAccessDenied`.                                                     |
+| `enter P4 101`                           | `HostGuestLimitExceeded`: employee 20 has limit 1 and already hosts P5. |
+| `enter P999 101`                         | `PassNotFound`: missing required lookup becomes a Result failure.       |
+| `enter P1 101`                           | `AlreadyInside`, no second visit.                                       |
+| `reload sample-data/malformed.json`      | `MalformedFile`, state unchanged.                                       |
+| `reload sample-data/does-not-exist.json` | `FileNotFound`, state unchanged (keep this path nonexistent).           |
+| `exit P1`                                | `EXIT`, the visit remains in history but is inactive.                   |
+| `list`                                   | `Visits: 2 total, 1 active`.                                            |
 
 The automatic demo uses a generated nonexistent filename for the missing-file case.
 Its error messages include the operation and file path. In the supplied sample,
@@ -121,14 +121,14 @@ the first visit. Reload is intentionally not a history-reset feature.
 The input file contains five explicit arrays: `guests`, `employees`, `rooms`,
 `passes`, and `visits`. They may be empty but must be present and non-null.
 
-| Model | Main data | Role |
-| --- | --- | --- |
-| `Guest` | ID, name, blocked flag | The person requesting entry. |
-| `Employee` | ID, name, maximum guest count | The host responsible for visitors. |
-| `Room` | ID, name, building ID | The requested access zone. |
-| `TemporaryPass` | Pass ID, guest/employee/building IDs, validity interval, allowed room IDs | Permission to request entry. |
-| `Visit` | Pass ID, room ID, entry time, optional exit time | Active presence or completed visit history. |
-| `SecurityData` | Read-only snapshots of all five collections | The current validated session state. |
+| Model           | Main data                                                                 | Role                                        |
+|-----------------|---------------------------------------------------------------------------|---------------------------------------------|
+| `Guest`         | ID, name, blocked flag                                                    | The person requesting entry.                |
+| `Employee`      | ID, name, maximum guest count                                             | The host responsible for visitors.          |
+| `Room`          | ID, name, building ID                                                     | The requested access zone.                  |
+| `TemporaryPass` | Pass ID, guest/employee/building IDs, validity interval, allowed room IDs | Permission to request entry.                |
+| `Visit`         | Pass ID, room ID, entry time, optional exit time                          | Active presence or completed visit history. |
+| `SecurityData`  | Read-only snapshots of all five collections                               | The current validated session state.        |
 
 Entry checks a blocked guest, the pass interval `[ValidFrom, ExpiresAt)`, the allowed
 room/building, duplicate active entry, and the host's active guest limit. Four main
@@ -151,12 +151,12 @@ prints the error and keeps the previous snapshot.
 Entry processing composes the following stages. Each fallible step returns
 `Result<T, AppError>` and stops the chain on failure.
 
-| Stage | Input | Successful output | Example refusal |
-| --- | --- | --- | --- |
-| `EnrichRequest` | State, pass/room request, current time | `EnrichedRequest` with resolved records | `PassNotFound` |
-| `EvaluateAccess` | Enriched request | The same request after rule checks | `GuestBlocked`, `PassExpired`, `ZoneAccessDenied`, `HostGuestLimitExceeded` |
-| `Visit.Create` and `WithVisits` | Validated request and existing snapshot | New state containing the visit | Invalid visit data or inconsistent state |
-| `FormatResult` | Validated request and new state | `AccessDecision` containing state and message | Pure transformation; no new domain check |
+| Stage                           | Input                                   | Successful output                             | Example refusal                                                             |
+|---------------------------------|-----------------------------------------|-----------------------------------------------|-----------------------------------------------------------------------------|
+| `EnrichRequest`                 | State, pass/room request, current time  | `EnrichedRequest` with resolved records       | `PassNotFound`                                                              |
+| `EvaluateAccess`                | Enriched request                        | The same request after rule checks            | `GuestBlocked`, `PassExpired`, `ZoneAccessDenied`, `HostGuestLimitExceeded` |
+| `Visit.Create` and `WithVisits` | Validated request and existing snapshot | New state containing the visit                | Invalid visit data or inconsistent state                                    |
+| `FormatResult`                  | Validated request and new state         | `AccessDecision` containing state and message | Pure transformation; no new domain check                                    |
 
 `Program.Execute` maps the successful decision to a console outcome.
 `RunSession` handles the resulting Success or Failure once, at the application
@@ -169,18 +169,18 @@ path, and reason. A broken file is never replaced with an empty successful state
 
 ## Files and assignment mapping
 
-| Requirement | Files and methods |
-| --- | --- |
-| Distinct success/failure cases | `Result.cs`: `SuccessCase`, `FailureCase`, `Match`; payloads are validated. |
-| Meaningful domain refusals | `FunctionalPipeline.cs`: `EvaluateAccess`, `CheckGuestBlocked`, `CheckPassValidity`, `CheckZoneAccess`, `CheckGuestLimit`. |
-| Real optional/required lookups | `Option.cs`: `Some`, `None`, `ToResult`; `AccessPipeline.Find`, `EnrichRequest`; console `lookup`/`count`. |
-| Pure transformation | `Result.Map`; workflow `FormatResult`; console maps an `AccessDecision` into `ConsoleOutcome`. |
-| Fallible composition | `Result.Bind`; `EnrichRequest -> EvaluateAccess -> Visit.Create -> WithVisits`. |
-| Failure stops dependent callbacks | `Map`/`Bind` preserve the error without invoking the callback. |
-| Operational boundary | `Parser.Load`: catches relevant file/JSON exceptions and returns errors with context. |
-| Atomic loading and safe reload | `Parser.Build` builds a complete validated snapshot; `Parser.Reload` protects existing history. |
-| Final application handling | `Program.Run` handles initial load; `RunSession` handles each command Result once. |
-| Normal/refusal/missing/file demos | `Program.RunDemo`, shipped JSON, interactive commands above. |
+| Requirement                       | Files and methods                                                                                                          |
+|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| Distinct success/failure cases    | `Result.cs`: `SuccessCase`, `FailureCase`, `Match`; payloads are validated.                                                |
+| Meaningful domain refusals        | `FunctionalPipeline.cs`: `EvaluateAccess`, `CheckGuestBlocked`, `CheckPassValidity`, `CheckZoneAccess`, `CheckGuestLimit`. |
+| Real optional/required lookups    | `Option.cs`: `Some`, `None`, `ToResult`; `AccessPipeline.Find`, `EnrichRequest`; console `lookup`/`count`.                 |
+| Pure transformation               | `Result.Map`; workflow `FormatResult`; console maps an `AccessDecision` into `ConsoleOutcome`.                             |
+| Fallible composition              | `Result.Bind`; `EnrichRequest -> EvaluateAccess -> Visit.Create -> WithVisits`.                                            |
+| Failure stops dependent callbacks | `Map`/`Bind` preserve the error without invoking the callback.                                                             |
+| Operational boundary              | `Parser.Load`: catches relevant file/JSON exceptions and returns errors with context.                                      |
+| Atomic loading and safe reload    | `Parser.Build` builds a complete validated snapshot; `Parser.Reload` protects existing history.                            |
+| Final application handling        | `Program.Run` handles initial load; `RunSession` handles each command Result once.                                         |
+| Normal/refusal/missing/file demos | `Program.RunDemo`, shipped JSON, interactive commands above.                                                               |
 
 `Map` takes `T -> U` and wraps the transformed value in a successful Result.
 `Bind` takes `T -> Result<U, E>` and preserves the returned success or failure.
@@ -195,13 +195,13 @@ interactive entry/repeated-entry/exit scenario also completed successfully.
 A clean copy of the module, without existing `bin` or `obj` directories, was built,
 tested, and run successfully on the same date.
 
-| Test file | Cases | Coverage |
-| --- | ---: | --- |
-| `FunctionalTest.cs` | 9 | Map/Bind success, unchanged failure, callback counters, Match, Some(false/0), None, required payloads. |
-| `ModelTest.cs` | 5 | Validated factories, immutable copies, duplicate identities, references and history. |
-| `WorkflowTest.cs` | 16 | Complete success, all four main failures, interval boundaries, missing/present lookup, duplicate entry, exit/capacity and skipped operations. |
-| `FileTests.cs` | 17 | Valid JSON, missing/malformed/null data, missing versus explicit false/zero, references, partial-update prevention and reload. |
-| `ConsoleTests.cs` | 18 | End-to-end demo and command handling, failure recovery, arguments, EOF, quoted paths, deterministic time and bundled fixtures. |
+| Test file           | Cases | Coverage                                                                                                                                      |
+|---------------------|------:|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `FunctionalTest.cs` |     9 | Map/Bind success, unchanged failure, callback counters, Match, Some(false/0), None, required payloads.                                        |
+| `ModelTest.cs`      |     5 | Validated factories, immutable copies, duplicate identities, references and history.                                                          |
+| `WorkflowTest.cs`   |    16 | Complete success, all four main failures, interval boundaries, missing/present lookup, duplicate entry, exit/capacity and skipped operations. |
+| `FileTests.cs`      |    17 | Valid JSON, missing/malformed/null data, missing versus explicit false/zero, references, partial-update prevention and reload.                |
+| `ConsoleTests.cs`   |    18 | End-to-end demo and command handling, failure recovery, arguments, EOF, quoted paths, deterministic time and bundled fixtures.                |
 
 Key assertions to show at defense:
 
@@ -221,12 +221,12 @@ Key assertions to show at defense:
 
 All team members belong to group **IT-2511**.
 
-| Member | Name / account | Contribution at this stage |
-| --- | --- | --- |
-| 1 | Artur Mikhayevich / `kaifonavt` | Result/Option, validated models, SecurityData, functional/model tests. |
-| 2 | Meiirzhan Baigurman / `mmeeir` | Access pipeline, pure rule checks, entry/exit and workflow tests. |
-| 3 | Mailybay Zhalgas / `P4fos` | JSON parser, operational errors, reload rules, sample contents and file tests. |
-| 4 | Mukhametzhanov Batyrkhan / `bl1rk` | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
+| Member | Name / account                     | Contribution at this stage                                                                                     |
+|--------|------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| 1      | Artur Mikhayevich / `kaifonavt`    | Result/Option, validated models, SecurityData, functional/model tests.                                         |
+| 2      | Meiirzhan Baigurman / `mmeeir`     | Access pipeline, pure rule checks, entry/exit and workflow tests.                                              |
+| 3      | Mailybay Zhalgas / `P4fos`         | JSON parser, operational errors, reload rules, sample contents and file tests.                                 |
+| 4      | Mukhametzhanov Batyrkhan / `bl1rk` | Console integration, final Result handling, demonstration, console tests, fixture packaging and documentation. |
 
 ## Remaining limitations and next stage
 

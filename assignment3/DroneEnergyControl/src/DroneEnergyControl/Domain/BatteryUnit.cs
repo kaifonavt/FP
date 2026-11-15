@@ -2,10 +2,6 @@ namespace DroneEnergyControl.Domain;
 
 public sealed class BatteryUnit
 {
-    public string Id { get; }
-    public decimal Capacity { get; }
-    public decimal Charge { get; private set; }
-
     public BatteryUnit(string id, decimal capacity, decimal initialCharge)
     {
         if (string.IsNullOrWhiteSpace(id))
@@ -13,12 +9,17 @@ public sealed class BatteryUnit
         if (capacity <= 0)
             throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be greater than zero.");
         if (initialCharge < 0 || initialCharge > capacity)
-            throw new ArgumentOutOfRangeException(nameof(initialCharge), "Initial charge must be between zero and capacity.");
+            throw new ArgumentOutOfRangeException(nameof(initialCharge),
+                "Initial charge must be between zero and capacity.");
 
         Id = id.Trim();
         Capacity = capacity;
         Charge = initialCharge;
     }
+
+    public string Id { get; }
+    public decimal Capacity { get; }
+    public decimal Charge { get; private set; }
 
     public bool ChargeBy(decimal amount)
     {

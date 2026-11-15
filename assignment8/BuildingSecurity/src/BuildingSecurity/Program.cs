@@ -6,22 +6,24 @@ public static class Program
         "Usage: BuildingSecurity [--demo | --report-demo <export.json> | --data <path> | --help]";
 
     private const string Commands = """
-        Commands:
-          list                  Show guests, passes, rooms and visits
-          enter <pass> <room>    Request entry, for example: enter P1 101
-          exit <pass>           End an active visit, for example: exit P1
-          lookup <guest-id>     Show Some(guest) or None
-          count <employee-id>   Show Some(active guest count) or None
-          reload <path>         Load a complete new snapshot before any visits
-          reports               Show attention and host load reports
-          export <path>         Export both reports as JSON
-          help                  Show commands
-          quit                  End this session (changes are in memory only)
-        """;
+                                    Commands:
+                                      list                  Show guests, passes, rooms and visits
+                                      enter <pass> <room>    Request entry, for example: enter P1 101
+                                      exit <pass>           End an active visit, for example: exit P1
+                                      lookup <guest-id>     Show Some(guest) or None
+                                      count <employee-id>   Show Some(active guest count) or None
+                                      reload <path>         Load a complete new snapshot before any visits
+                                      reports               Show attention and host load reports
+                                      export <path>         Export both reports as JSON
+                                      help                  Show commands
+                                      quit                  End this session (changes are in memory only)
+                                    """;
 
     // Console I/O and the clock live at this boundary, outside the pure domain pipeline.
-    public static int Main(string[] args) =>
-        Run(args, Console.In, Console.Out, () => DateTimeOffset.UtcNow);
+    public static int Main(string[] args)
+    {
+        return Run(args, Console.In, Console.Out, () => DateTimeOffset.UtcNow);
+    }
 
     public static int Run(
         string[] args,
@@ -39,11 +41,17 @@ public static class Program
         var reportDemo = args is ["--report-demo", _];
         string path;
         if (reportDemo)
+        {
             path = Path.Combine(AppContext.BaseDirectory, "reporting.json");
+        }
         else if (args.Length == 0 || demo)
+        {
             path = Path.Combine(AppContext.BaseDirectory, "security.json");
+        }
         else if (args is ["--data", var suppliedPath])
+        {
             path = suppliedPath;
+        }
         else
         {
             output.WriteLine(Usage);
@@ -62,7 +70,7 @@ public static class Program
                     return RunReportDemo(state, args[1], output);
 
                 output.WriteLine(Commands);
-                return RunSession(state, input, output, now, echo: false);
+                return RunSession(state, input, output, now, false);
             },
             error =>
             {
@@ -78,20 +86,10 @@ public static class Program
         output.WriteLine($"Demo time: {demoTime:O} (fixed; interactive mode uses real UTC time)");
         var malformed = Path.Combine(AppContext.BaseDirectory, "malformed.json");
         var missing = Path.Combine(AppContext.BaseDirectory, $"missing-{Guid.NewGuid():N}.json");
-        using var script = new StringReader(string.Join(Environment.NewLine, new[]
-        {
-            "lookup 1", "lookup 999", "count 10",
-            "enter P1 101",       // Success.
-            "enter P2 101",       // Blocked guest.
-            "enter P3 101",       // Expired pass.
-            "enter P1 102",       // Unauthorized room.
-            "enter P4 101",       // Host 20 already hosts P5.
-            "enter P999 101",     // Missing required lookup.
-            "enter P1 101",       // Duplicate active entry.
-            $"reload {malformed}", $"reload {missing}",
-            "exit P1", "list", "quit"
-        }));
-        return RunSession(state, script, output, () => demoTime, echo: true);
+        using var script = new StringReader(string.Join(Environment.NewLine, "lookup 1", "lookup 999", "count 10",
+            "enter P1 101", "enter P2 101", "enter P3 101", "enter P1 102", "enter P4 101", "enter P999 101",
+            "enter P1 101", $"reload {malformed}", $"reload {missing}", "exit P1", "list", "quit"));
+        return RunSession(state, script, output, () => demoTime, true);
     }
 
     private static int RunReportDemo(SecurityData state, string exportPath, TextWriter output)
@@ -101,8 +99,16 @@ public static class Program
         {
             output.WriteLine(ReportDisplay.Format(report));
             return ReportExporter.Save(report, exportPath);
-        }).Match(path => { output.WriteLine($"Exported: {path}"); return 0; },
-            error => { WriteError(output, error); return 1; });
+        }).Match(path =>
+            {
+                output.WriteLine($"Exported: {path}");
+                return 0;
+            },
+            error =>
+            {
+                WriteError(output, error);
+                return 1;
+            });
     }
 
     private static int RunSession(
@@ -140,10 +146,9 @@ public static class Program
             if (stop)
                 break;
         }
+
         return 0;
     }
-
-    private sealed record ConsoleOutcome(SecurityData State, string Message, bool Quit = false);
 
     private static Result<ConsoleOutcome, AppError> Execute(
         SecurityData state, string line, Func<DateTimeOffset> now)
@@ -156,7 +161,7 @@ public static class Program
             case "help" when words.Length == 1:
                 return Success(state, Commands);
             case "quit" when words.Length == 1:
-                return Result<ConsoleOutcome, AppError>.Success(new(state, "Goodbye.", Quit: true));
+                return Result<ConsoleOutcome, AppError>.Success(new ConsoleOutcome(state, "Goodbye.", true));
             case "list" when words.Length == 1:
                 return Success(state, Describe(state));
             case "reports" when words.Length == 1:
@@ -169,20 +174,20 @@ public static class Program
                 return ReportWorkflow.Export(state, now(), new NativeLoadAdapter(), exportPath)
                     .Map(saved => new ConsoleOutcome(state, $"Exported: {saved}"));
             case "enter" when words.Length == 3
-                                   && int.TryParse(words[2], out var roomId) && roomId > 0:
-                return AccessPipeline.ProcessEntry(state, new(words[1], roomId), now())
+                              && int.TryParse(words[2], out var roomId) && roomId > 0:
+                return AccessPipeline.ProcessEntry(state, new AccessRequest(words[1], roomId), now())
                     .Map(decision => new ConsoleOutcome(decision.NextState, decision.Message));
             case "exit" when words.Length == 2:
                 return AccessPipeline.ProcessExit(state, words[1], now())
                     .Map(decision => new ConsoleOutcome(decision.NextState, decision.Message));
             case "lookup" when words.Length == 2
-                                    && int.TryParse(words[1], out var guestId) && guestId > 0:
+                               && int.TryParse(words[1], out var guestId) && guestId > 0:
                 return Success(state, AccessPipeline.Find(state.Guests, guest => guest.Id == guestId)
                     .Match(
                         guest => $"Some(guest {guest.Id}): {guest.Name}, blocked={guest.IsBlocked}",
                         () => "None: guest not found"));
             case "count" when words.Length == 2
-                                   && int.TryParse(words[1], out var employeeId) && employeeId > 0:
+                              && int.TryParse(words[1], out var employeeId) && employeeId > 0:
                 // A known host with zero active guests is present, not missing.
                 var count = AccessPipeline.Find(state.Employees, employee => employee.Id == employeeId)
                     .Match(
@@ -199,17 +204,21 @@ public static class Program
                 return Parser.Reload(state, path)
                     .Map(next => new ConsoleOutcome(next, $"Reloaded: {path}"));
             default:
-                return Result<ConsoleOutcome, AppError>.Failure(new(
+                return Result<ConsoleOutcome, AppError>.Failure(new AppError(
                     "InvalidCommand", "Usage: enter <pass> <positive room>, exit <pass>, lookup <positive guest-id>, " +
-                    "count <positive employee-id>, reload <path>, reports, export <path>, list, help, quit."));
+                                      "count <positive employee-id>, reload <path>, reports, export <path>, list, help, quit."));
         }
     }
 
-    private static Result<ConsoleOutcome, AppError> Success(SecurityData state, string message) =>
-        Result<ConsoleOutcome, AppError>.Success(new(state, message));
+    private static Result<ConsoleOutcome, AppError> Success(SecurityData state, string message)
+    {
+        return Result<ConsoleOutcome, AppError>.Success(new ConsoleOutcome(state, message));
+    }
 
-    private static void WriteError(TextWriter output, AppError error) =>
+    private static void WriteError(TextWriter output, AppError error)
+    {
         output.WriteLine($"ERROR [{error.Code}]: {error.Message}");
+    }
 
     private static string Describe(SecurityData state)
     {
@@ -227,4 +236,6 @@ public static class Program
         lines.Add($"Visits: {state.Visits.Count} total, {state.Visits.Count(v => v.IsActive)} active");
         return string.Join(Environment.NewLine, lines);
     }
+
+    private sealed record ConsoleOutcome(SecurityData State, string Message, bool Quit = false);
 }

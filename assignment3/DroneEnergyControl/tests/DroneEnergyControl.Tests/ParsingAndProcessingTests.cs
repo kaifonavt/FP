@@ -1,6 +1,6 @@
-using Xunit;
 using DroneEnergyControl.Application;
 using DroneEnergyControl.Domain;
+using Xunit;
 
 namespace DroneEnergyControl.Tests;
 
@@ -37,8 +37,9 @@ public sealed class ParsingAndProcessingTests
     public void C004TransferFailsAndLeavesBothD2AndD3Unchanged()
     {
         var units = InitialUnits();
-        
-        CommandProcessor.ExecuteAll(new[] {
+
+        CommandProcessor.ExecuteAll(new[]
+        {
             "C002|Consume|D2|-|20",
             "C003|Transfer|D1|D3|25"
         }, units);
@@ -75,7 +76,8 @@ public sealed class ParsingAndProcessingTests
     public void DuplicateIdIsRejectedBeforeExecutionCaseInsensitively()
     {
         var units = InitialUnits();
-        var results = CommandProcessor.ExecuteAll(new[] { "C003|Charge|D1|-|10", "c003|Consume|D1|-|10" }, units).ToList();
+        var results = CommandProcessor.ExecuteAll(new[] { "C003|Charge|D1|-|10", "c003|Consume|D1|-|10" }, units)
+            .ToList();
 
         Assert.Equal(ResultClassification.Applied, results[0].Classification);
         Assert.Equal(ResultClassification.Rejected, results[1].Classification);
@@ -129,10 +131,13 @@ public sealed class ParsingAndProcessingTests
         Assert.Equal(ResultClassification.Invalid, result.Classification);
     }
 
-    private static Dictionary<string, BatteryUnit> InitialUnits() => new(StringComparer.OrdinalIgnoreCase)
+    private static Dictionary<string, BatteryUnit> InitialUnits()
     {
-        ["D1"] = new BatteryUnit("D1", 100m, 60m),
-        ["D2"] = new BatteryUnit("D2", 80m, 70m),
-        ["D3"] = new BatteryUnit("D3", 50m, 10m)
-    };
+        return new Dictionary<string, BatteryUnit>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["D1"] = new BatteryUnit("D1", 100m, 60m),
+            ["D2"] = new BatteryUnit("D2", 80m, 70m),
+            ["D3"] = new BatteryUnit("D3", 50m, 10m)
+        };
+    }
 }

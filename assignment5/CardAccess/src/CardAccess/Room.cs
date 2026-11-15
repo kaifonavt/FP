@@ -1,15 +1,9 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CardAccess;
 
 public sealed class Room
 {
-    public int number { get; }
-
-    [JsonPropertyName("type")]
-    public AccessLevel level { get; }
-
     [JsonConstructor]
     public Room(int number, AccessLevel level)
     {
@@ -22,4 +16,8 @@ public sealed class Room
         this.number = number;
         this.level = level;
     }
+
+    public int number { get; }
+
+    [JsonPropertyName("type")] public AccessLevel level { get; }
 }

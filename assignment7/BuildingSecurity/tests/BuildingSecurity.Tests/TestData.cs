@@ -8,8 +8,10 @@ internal static class TestData
         DateTimeOffset.Parse("2026-10-20T10:00:00Z");
 
     internal static T Ok<T>(Result<T, AppError> result)
-        where T : notnull =>
-        Assert.IsType<Result<T, AppError>.SuccessCase>(result).Value;
+        where T : notnull
+    {
+        return Assert.IsType<Result<T, AppError>.SuccessCase>(result).Value;
+    }
 
     internal static AppError Error<T>(
         Result<T, AppError> result,

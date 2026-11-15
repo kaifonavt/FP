@@ -1,5 +1,5 @@
-using Xunit;
 using DroneEnergyControl.Domain;
+using Xunit;
 
 namespace DroneEnergyControl.Tests;
 
@@ -48,17 +48,17 @@ public sealed class BatteryUnitTests
     public void ChargeBeyondCapacityIsRejectedWithoutPartialApplication()
     {
         var unit = new BatteryUnit("D1", 100m, 90m);
-        
+
         Assert.False(unit.ChargeBy(15m));
-        Assert.Equal(90m, unit.Charge); 
+        Assert.Equal(90m, unit.Charge);
     }
 
     [Fact]
     public void ConsumeMoreThanAvailableChargeIsRejected()
     {
         var unit = new BatteryUnit("D1", 100m, 10m);
-        
+
         Assert.False(unit.Consume(15m));
-        Assert.Equal(10m, unit.Charge); 
+        Assert.Equal(10m, unit.Charge);
     }
 }

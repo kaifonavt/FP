@@ -11,7 +11,7 @@ dotnet run /directorytproject/
 ## Tests
 
 | Test case                              | Expected                 | Pass |
-| -------------------------------------- | ------------------------ | ---- |
+|----------------------------------------|--------------------------|------|
 | 101\|HIGH\|CANNOT SIGN IN\|2           | Successful parsing       | pass |
 | BAD\|CRITICAL\|SERVICE UNAVAILABLE\|4  | Invalid ID failure       | pass |
 | 104\|UNKNOWN\|PRINTER PROBLEM\|2       | Invalid priority failure | pass |
@@ -44,7 +44,7 @@ Which functions are pure, where do side effects remain, and which C# features su
 
 Pure unctions are  `ParseTicket`, `GetAction`, `CalculateScore`, `PriorityFirstStrategy`, `QuickFixStrategy`.
 
-Side effects `Console.WriteLine` 
+Side effects `Console.WriteLine`
 
 C# features `readonly struct`, `Func<>`
 
@@ -58,11 +58,11 @@ During Lazy Evaluation (asignment requirements), going through every element
 
 How does the Strategy pattern allow the scoring behavior to change?
 
-`CalculateScore` can acept any type of stategies  what can be used to change formula outside of high order function
+`CalculateScore` can acept any type of stategies what can be used to change formula outside of high order function
 
 What does readonly prevent in SupportTicket?
 
-It provides immutablity 
+It provides immutablity
 
 Why does Main call Join after starting the summary thread?
 

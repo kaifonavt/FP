@@ -5,8 +5,10 @@ public sealed record TimedVisit(Visit Visit, long Minutes);
 public static class SecurityExtensions
 {
     // Both extensions are lazy and leave the source collection unchanged.
-    public static IEnumerable<Visit> ActiveOnly(this IEnumerable<Visit> visits) =>
-        visits.Where(visit => visit.IsActive);
+    public static IEnumerable<Visit> ActiveOnly(this IEnumerable<Visit> visits)
+    {
+        return visits.Where(visit => visit.IsActive);
+    }
 
     // The report boundary validates timestamps before enumerating this pure iterator.
     public static IEnumerable<TimedVisit> WithDuration(

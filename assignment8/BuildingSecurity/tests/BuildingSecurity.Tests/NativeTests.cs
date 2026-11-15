@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Xunit;
 using static BuildingSecurity.Tests.TestData;
 
@@ -13,14 +14,20 @@ public class NativeTests
     [InlineData(0, 0, 0)]
     [InlineData(1, 0, 100)]
     [InlineData(int.MaxValue - 1, int.MaxValue, 100)]
-    public void RealNativeCall_ReturnsManuallyExpectedPercent(int count, int capacity, int expected) =>
+    public void RealNativeCall_ReturnsManuallyExpectedPercent(int count, int capacity, int expected)
+    {
         Assert.Equal(expected, Ok(new NativeLoadAdapter().Calculate(count, capacity)));
+    }
 
     [Fact]
     public void NegativeInput_IsRejectedBeforeCallingNative()
     {
-        int calls = 0;
-        var adapter = new NativeLoadAdapter((_, _) => { calls++; return 0; });
+        var calls = 0;
+        var adapter = new NativeLoadAdapter((_, _) =>
+        {
+            calls++;
+            return 0;
+        });
         Error(adapter.Calculate(-1, 3), "InvalidLoadInput");
         Error(adapter.Calculate(1, -1), "InvalidLoadInput");
         Assert.Equal(0, calls);
@@ -29,7 +36,11 @@ public class NativeTests
     [Fact]
     public void LoadingAndBindingExceptions_AreResultFailures()
     {
-        foreach (var exception in new Exception[] { new DllNotFoundException("missing"), new EntryPointNotFoundException("export"), new BadImageFormatException("architecture") })
+        foreach (var exception in new Exception[]
+                 {
+                     new DllNotFoundException("missing"), new EntryPointNotFoundException("export"),
+                     new BadImageFormatException("architecture")
+                 })
         {
             var adapter = new NativeLoadAdapter((_, _) => throw exception);
             Assert.Contains(exception.Message, Error(adapter.Calculate(1, 3), "NativeUnavailable").Message);
@@ -37,8 +48,10 @@ public class NativeTests
     }
 
     [Fact]
-    public void UnexpectedNativeReturn_IsRejected() =>
+    public void UnexpectedNativeReturn_IsRejected()
+    {
         Error(new NativeLoadAdapter((_, _) => -1).Calculate(1, 3), "NativeCalculationFailed");
+    }
 
     [Fact]
     public void CompleteWorkflow_LoadsJson_UsesNative_ExportsBothReports()
@@ -53,11 +66,14 @@ public class NativeTests
         try
         {
             Ok(ReportWorkflow.Export(state, Now, new NativeLoadAdapter(), path));
-            using var json = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+            using var json = JsonDocument.Parse(File.ReadAllText(path));
             Assert.Equal(34, json.RootElement.GetProperty("HostLoad")[1].GetProperty("LoadPercent").GetInt32());
             Assert.Equal(2, json.RootElement.GetProperty("Attention").GetArrayLength());
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]
@@ -75,6 +91,9 @@ public class NativeTests
             Assert.Equal(visits, state.Visits);
             Assert.Equal(2, Ok(ReportWorkflow.Build(state, Now, new NativeLoadAdapter())).Attention.Count);
         }
-        finally { File.Delete(path); }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 }
